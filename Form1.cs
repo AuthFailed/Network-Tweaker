@@ -19,6 +19,7 @@ namespace Update_Your_Hosts
         readonly string path = @"C:\Windows\System32\drivers\etc\hosts";
         public string Path => path;
 
+        // Определяем выбор фильтра и применяем его
         void Button1_Click(object sender, EventArgs e)
         {
             label2.Text = "";
@@ -79,6 +80,7 @@ namespace Update_Your_Hosts
             }
         }
 
+        // Загрузка и применение фильтра
         void Updatehosts(string line)
         {
             ProcessStartInfo cmd;
@@ -105,17 +107,19 @@ namespace Update_Your_Hosts
                 Clipboard.SetText(ex.ToString());
             }
         }
+
+        // Ручное добавления доменов в фильтр
         void Button2_Click(object sender, EventArgs e)
         {
             ProcessStartInfo cmd;
             cmd = new ProcessStartInfo("cmd", @"/c ipconfig /flushdns");
             try
             {
-                if (string.IsNullOrWhiteSpace(richTextBox1.Text))
+                if (string.IsNullOrWhiteSpace(richTextBox1.Text)) // При пустой строке
                 {
                     MessageBox.Show("Введите домен!", "Внимание!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-                else if (!richTextBox1.Text.Contains("."))
+                else if (!richTextBox1.Text.Contains(".")) // Если  не находим точки в домене
                 {
                     MessageBox.Show("Домен должен быть вида сайт.зона", "Внимание!");
                 }
@@ -125,7 +129,7 @@ namespace Update_Your_Hosts
                     string[] array = File.ReadAllLines(Path);
                     foreach (string ar in array)
                     {
-                        if (ar.Contains(richTextBox1.Text))
+                        if (ar.Contains(richTextBox1.Text)) // А вдруг такой домен уже есть в фильтре
                         {
                             MessageBox.Show("Данный домен уже есть в фильтре", "Внимание!");
                             t++;
@@ -134,6 +138,7 @@ namespace Update_Your_Hosts
                     }
                     if(t<1)
                     {
+                        // Добавляем новый домен в фильтр
                         using (StreamWriter sw = new StreamWriter(Path, append: true))
                         {
                             sw.WriteLine("0.0.0.0 " + richTextBox1.Text);
@@ -143,6 +148,7 @@ namespace Update_Your_Hosts
                     }
                 }
             }
+            // Отлавливаем ошибки
             catch (Exception ex)
             {
                 MessageBox.Show("Данный домен уже присутствует в фильтре.", "Ошибка!", MessageBoxButtons.OK, MessageBoxIcon.Hand);
@@ -158,6 +164,7 @@ namespace Update_Your_Hosts
             progressBar1.Value = e.ProgressPercentage;
         }
 
+        // При успешной загрузке файла выводим уведомление об успехе и обновляем дату изменения фильтра
         void Web_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
         {
             MessageBox.Show("Обновление завершено!\nИнтернет появится через 10-15 секунд!", "Внимание!");
@@ -168,9 +175,10 @@ namespace Update_Your_Hosts
         {
             for (; Opacity < .93; Opacity += .04)
                 await Task.Delay(30);
-            label4.Text += File.GetLastWriteTime(@"C:\Windows\System32\drivers\\etc\hosts").ToString("dd/MM/yyyy");
+            label4.Text += File.GetLastWriteTime(@"C:\Windows\System32\drivers\\etc\hosts").ToString("dd/MM/yyyy"); // Получаем дату последнего изменения фильтра
         }
 
+        // Отрисовываем вертикальные вкладки
         void TabControl1_DrawItem(object sender, DrawItemEventArgs e)
         {
             Graphics g;
@@ -207,6 +215,7 @@ namespace Update_Your_Hosts
             e.Graphics.ResetClip();
         }
 
+        // Сбрасываем фильтр и восстанавливаем стандартное значение
         void Button3_Click(object sender, EventArgs e)
         {
             ProcessStartInfo cmd;
@@ -219,6 +228,7 @@ namespace Update_Your_Hosts
             label4.Text += File.GetLastWriteTime(@"C:\Windows\System32\drivers\\etc\hosts").ToString("dd/MM/yyyy");
         }
 
+        // Восстанавливаем фильтр из бэкапа
         void Button4_Click(object sender, EventArgs e)
         {
             try
