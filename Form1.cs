@@ -6,6 +6,7 @@ using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Update_Your_Hosts.Properties;
 
 namespace Update_Your_Hosts
 {
@@ -16,8 +17,9 @@ namespace Update_Your_Hosts
             InitializeComponent();
         }
 
-        readonly string path = @"C:\Windows\System32\drivers\etc\hosts";
-        public string Path => path;
+        readonly string hosts = @"C:\Windows\System32\drivers\etc\hosts";
+        readonly string backup = @"C:\\Windows\System32\drivers\etc\hosts_bak";
+        public string Path => hosts;
 
         // Определяем выбор фильтра и применяем его
         void Button1_Click(object sender, EventArgs e)
@@ -87,16 +89,16 @@ namespace Update_Your_Hosts
             cmd = new ProcessStartInfo("cmd", @"/c ipconfig /flushdns");
             try
             {
-                if (File.Exists(@"C:\\Windows\System32\drivers\etc\hosts_bak"))
-                    File.Delete(@"C:\\Windows\System32\drivers\etc\hosts_bak");
-                if (File.Exists(@"C:\Windows\System32\drivers\\etc\hosts"))
-                File.Copy(@"C:\Windows\System32\drivers\\etc\hosts", @"C:\Windows\System32\drivers\etc\hosts_bak");
+                if (File.Exists(backup))
+                    File.Delete(backup);
+                if (File.Exists(hosts))
+                File.Copy(hosts, backup);
                 Uri fileuri = new Uri(line);
                 using (WebClient wc = new WebClient())
                 {
                     wc.DownloadProgressChanged += Web_DownloadProgressChanged;
                     wc.DownloadFileCompleted += Web_DownloadFileCompleted;
-                    wc.DownloadFileAsync(fileuri, @"C:\Windows\System32\drivers\etc\hosts");
+                    wc.DownloadFileAsync(fileuri, hosts);
                 }
                 Process.Start(cmd);
             }
@@ -126,7 +128,7 @@ namespace Update_Your_Hosts
                 else
                 {
                     int t = 0;
-                    string[] array = File.ReadAllLines(Path);
+                    string[] array = File.ReadAllLines(hosts);
                     foreach (string ar in array)
                     {
                         if (ar.Contains(richTextBox1.Text)) // А вдруг такой домен уже есть в фильтре
@@ -139,7 +141,7 @@ namespace Update_Your_Hosts
                     if(t<1)
                     {
                         // Добавляем новый домен в фильтр
-                        using (StreamWriter sw = new StreamWriter(Path, append: true))
+                        using (StreamWriter sw = new StreamWriter(hosts, append: true))
                         {
                             sw.WriteLine("0.0.0.0 " + richTextBox1.Text);
                             MessageBox.Show("Домен " + richTextBox1.Text + " добавлен в черный список");
@@ -168,14 +170,14 @@ namespace Update_Your_Hosts
         void Web_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
         {
             MessageBox.Show("Обновление завершено!\nИнтернет появится через 10-15 секунд!", "Внимание!");
-            label4.Text = "Последнее обновление: " + File.GetLastWriteTime(@"C:\Windows\System32\drivers\\etc\hosts").ToString("dd/MM/yyyy");
+            label4.Text = "Последнее обновление: " + File.GetLastWriteTime(hosts).ToString("dd/MM/yyyy");
         }
 
         async void Form1_Load(object sender, EventArgs e)
         {
+            label4.Text += File.GetLastWriteTime(hosts).ToString("dd/MM/yyyy"); // Получаем дату последнего изменения фильтра
             for (; Opacity < .93; Opacity += .04)
                 await Task.Delay(30);
-            label4.Text += File.GetLastWriteTime(@"C:\Windows\System32\drivers\\etc\hosts").ToString("dd/MM/yyyy"); // Получаем дату последнего изменения фильтра
         }
 
         // Отрисовываем вертикальные вкладки
@@ -222,10 +224,10 @@ namespace Update_Your_Hosts
             cmd = new ProcessStartInfo("cmd", @"/c ipconfig /flushdns");
             Uri uri = new Uri("https://dropbox.com/s/mvjwnxi97wldzx8/hosts?dl=1");
             using (WebClient wc = new WebClient())
-                wc.DownloadFileAsync(uri, @"C:\Windows\System32\drivers\\etc\hosts");
+                wc.DownloadFileAsync(uri, hosts);
             MessageBox.Show("Восстановлен стандартный файл hosts", "Внимание!");
             Process.Start(cmd);
-            label4.Text += File.GetLastWriteTime(@"C:\Windows\System32\drivers\\etc\hosts").ToString("dd/MM/yyyy");
+            label4.Text += File.GetLastWriteTime(hosts).ToString("dd/MM/yyyy");
         }
 
         // Восстанавливаем фильтр из бэкапа
@@ -233,11 +235,11 @@ namespace Update_Your_Hosts
         {
             try
             {
-                if (File.Exists(@"C:\Windows\System32\drivers\etc\hosts_bak"))
+                if (File.Exists(backup))
                 {
-                    File.Delete(@"C:\Windows\System32\drivers\etc\hosts");
-                    File.Move(@"C:\Windows\System32\drivers\etc\hosts_bak", @"C:\Windows\System32\drivers\etc\hosts");
-                    label4.Text += File.GetLastWriteTime(@"C:\Windows\System32\drivers\\etc\hosts").ToString("dd/MM/yyyy");
+                    File.Delete(hosts);
+                    File.Move(backup, hosts);
+                    label4.Text += File.GetLastWriteTime(hosts).ToString("dd/MM/yyyy");
                 }
                 else
                 {
@@ -250,6 +252,13 @@ namespace Update_Your_Hosts
                 Clipboard.Clear();
                 Clipboard.SetText(ex.ToString());
             }
+        }
+
+
+        // Сохраняем настройки
+        void Button5_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

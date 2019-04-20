@@ -42,6 +42,8 @@
             this.button2 = new System.Windows.Forms.Button();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.button5 = new System.Windows.Forms.Button();
+            this.button4 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
             this.checkBox8 = new System.Windows.Forms.CheckBox();
             this.checkBox7 = new System.Windows.Forms.CheckBox();
@@ -51,8 +53,6 @@
             this.checkBox3 = new System.Windows.Forms.CheckBox();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.button4 = new System.Windows.Forms.Button();
-            this.button5 = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -73,7 +73,7 @@
             // 
             this.button1.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.button1.Font = new System.Drawing.Font("Microsoft YaHei", 9F);
-            this.button1.Location = new System.Drawing.Point(160, 111);
+            this.button1.Location = new System.Drawing.Point(162, 111);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(129, 23);
             this.button1.TabIndex = 1;
@@ -94,7 +94,7 @@
             // label2
             // 
             this.label2.Font = new System.Drawing.Font("Microsoft YaHei", 9F);
-            this.label2.Location = new System.Drawing.Point(160, 155);
+            this.label2.Location = new System.Drawing.Point(162, 155);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(129, 16);
             this.label2.TabIndex = 3;
@@ -103,6 +103,7 @@
             // tabControl1
             // 
             this.tabControl1.Alignment = System.Windows.Forms.TabAlignment.Left;
+            this.tabControl1.AllowDrop = true;
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Controls.Add(this.tabPage3);
@@ -242,6 +243,28 @@
             this.tabPage3.Text = "Настройки";
             this.tabPage3.ToolTipText = "Настройки";
             // 
+            // button5
+            // 
+            this.button5.Font = new System.Drawing.Font("Verdana", 9.75F);
+            this.button5.Location = new System.Drawing.Point(283, 160);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(162, 26);
+            this.button5.TabIndex = 10;
+            this.button5.Text = "Сохранить настройки";
+            this.button5.UseVisualStyleBackColor = true;
+            this.button5.Click += new System.EventHandler(this.Button5_Click);
+            // 
+            // button4
+            // 
+            this.button4.Font = new System.Drawing.Font("Verdana", 9.75F);
+            this.button4.Location = new System.Drawing.Point(316, 8);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(129, 25);
+            this.button4.TabIndex = 9;
+            this.button4.Text = "Вернуть";
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.Button4_Click);
+            // 
             // button3
             // 
             this.button3.Font = new System.Drawing.Font("Verdana", 9.75F);
@@ -332,27 +355,6 @@
             this.checkBox1.TabIndex = 0;
             this.checkBox1.Text = "checkBox1";
             this.checkBox1.UseVisualStyleBackColor = true;
-            // 
-            // button4
-            // 
-            this.button4.Font = new System.Drawing.Font("Verdana", 9.75F);
-            this.button4.Location = new System.Drawing.Point(316, 8);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(129, 25);
-            this.button4.TabIndex = 9;
-            this.button4.Text = "Вернуть";
-            this.button4.UseVisualStyleBackColor = true;
-            this.button4.Click += new System.EventHandler(this.Button4_Click);
-            // 
-            // button5
-            // 
-            this.button5.Font = new System.Drawing.Font("Verdana", 9.75F);
-            this.button5.Location = new System.Drawing.Point(283, 160);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(162, 26);
-            this.button5.TabIndex = 10;
-            this.button5.Text = "Сохранить настройки";
-            this.button5.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 
