@@ -42,6 +42,7 @@
             this.button2 = new System.Windows.Forms.Button();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.button6 = new System.Windows.Forms.Button();
             this.button5 = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
@@ -52,7 +53,7 @@
             this.checkBox4 = new System.Windows.Forms.CheckBox();
             this.checkBox3 = new System.Windows.Forms.CheckBox();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.autoupdatebox = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -225,6 +226,7 @@
             // tabPage3
             // 
             this.tabPage3.BackColor = System.Drawing.Color.Transparent;
+            this.tabPage3.Controls.Add(this.button6);
             this.tabPage3.Controls.Add(this.button5);
             this.tabPage3.Controls.Add(this.button4);
             this.tabPage3.Controls.Add(this.button3);
@@ -235,13 +237,24 @@
             this.tabPage3.Controls.Add(this.checkBox4);
             this.tabPage3.Controls.Add(this.checkBox3);
             this.tabPage3.Controls.Add(this.checkBox2);
-            this.tabPage3.Controls.Add(this.checkBox1);
+            this.tabPage3.Controls.Add(this.autoupdatebox);
             this.tabPage3.Location = new System.Drawing.Point(124, 4);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Size = new System.Drawing.Size(453, 198);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Настройки";
             this.tabPage3.ToolTipText = "Настройки";
+            // 
+            // button6
+            // 
+            this.button6.Font = new System.Drawing.Font("Verdana", 9.75F);
+            this.button6.Location = new System.Drawing.Point(303, 67);
+            this.button6.Name = "button6";
+            this.button6.Size = new System.Drawing.Size(142, 26);
+            this.button6.TabIndex = 11;
+            this.button6.Text = "Авто Обновление";
+            this.button6.UseVisualStyleBackColor = true;
+            this.button6.Click += new System.EventHandler(this.Button6_Click);
             // 
             // button5
             // 
@@ -346,15 +359,15 @@
             this.checkBox2.Text = "checkBox2";
             this.checkBox2.UseVisualStyleBackColor = true;
             // 
-            // checkBox1
+            // autoupdatebox
             // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(3, 8);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(95, 23);
-            this.checkBox1.TabIndex = 0;
-            this.checkBox1.Text = "checkBox1";
-            this.checkBox1.UseVisualStyleBackColor = true;
+            this.autoupdatebox.AutoSize = true;
+            this.autoupdatebox.Location = new System.Drawing.Point(3, 8);
+            this.autoupdatebox.Name = "autoupdatebox";
+            this.autoupdatebox.Size = new System.Drawing.Size(144, 23);
+            this.autoupdatebox.TabIndex = 0;
+            this.autoupdatebox.Text = "Авто Обновление";
+            this.autoupdatebox.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 
@@ -362,12 +375,13 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(581, 202);
             this.Controls.Add(this.tabControl1);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
             this.Opacity = 0D;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Update your Hosts";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
@@ -400,12 +414,13 @@
         private System.Windows.Forms.CheckBox checkBox4;
         private System.Windows.Forms.CheckBox checkBox3;
         private System.Windows.Forms.CheckBox checkBox2;
-        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.CheckBox autoupdatebox;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.Button button5;
+        private System.Windows.Forms.Button button6;
     }
 }
 

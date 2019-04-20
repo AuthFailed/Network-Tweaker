@@ -6,7 +6,6 @@ using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Update_Your_Hosts.Properties;
 
 namespace Update_Your_Hosts
 {
@@ -26,7 +25,7 @@ namespace Update_Your_Hosts
         {
             label2.Text = "";
             progressBar1.Value = 0;
-            switch(comboBox1.SelectedIndex)
+            switch (comboBox1.SelectedIndex)
             {
                 case 0:
                     Updatehosts("http://sbc.io/hosts/hosts");
@@ -92,7 +91,7 @@ namespace Update_Your_Hosts
                 if (File.Exists(backup))
                     File.Delete(backup);
                 if (File.Exists(hosts))
-                File.Copy(hosts, backup);
+                    File.Copy(hosts, backup);
                 Uri fileuri = new Uri(line);
                 using (WebClient wc = new WebClient())
                 {
@@ -138,7 +137,7 @@ namespace Update_Your_Hosts
                             break;
                         }
                     }
-                    if(t<1)
+                    if (t < 1)
                     {
                         // Добавляем новый домен в фильтр
                         using (StreamWriter sw = new StreamWriter(hosts, append: true))
@@ -175,6 +174,8 @@ namespace Update_Your_Hosts
 
         async void Form1_Load(object sender, EventArgs e)
         {
+            OptionsLoad();
+            Autoupd();
             label4.Text += File.GetLastWriteTime(hosts).ToString("dd/MM/yyyy"); // Получаем дату последнего изменения фильтра
             for (; Opacity < .93; Opacity += .04)
                 await Task.Delay(30);
@@ -222,7 +223,7 @@ namespace Update_Your_Hosts
         {
             ProcessStartInfo cmd;
             cmd = new ProcessStartInfo("cmd", @"/c ipconfig /flushdns");
-            Uri uri = new Uri("https://dropbox.com/s/mvjwnxi97wldzx8/hosts?dl=1");
+            Uri uri = new Uri("https://raw.githubusercontent.com/AuthFailed/Update-Your-Hosts/master/hosts");
             using (WebClient wc = new WebClient())
                 wc.DownloadFileAsync(uri, hosts);
             MessageBox.Show("Восстановлен стандартный файл hosts", "Внимание!");
@@ -246,7 +247,7 @@ namespace Update_Your_Hosts
                     MessageBox.Show("Бэкапа нет");
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show("Произошла какая-то неведомая херня.\nКод ошибки записан в буфер обмена", "Ошибка!", MessageBoxButtons.OK, MessageBoxIcon.Hand);
                 Clipboard.Clear();
@@ -259,6 +260,70 @@ namespace Update_Your_Hosts
         void Button5_Click(object sender, EventArgs e)
         {
 
+        }
+
+        void Button6_Click(object sender, EventArgs e)
+        {
+            string username = Environment.GetEnvironmentVariable("USERNAME");
+            string drivename = Environment.GetEnvironmentVariable("SYSTEMDRIVE");
+            try
+            {
+                Uri uri = new Uri("https://github.com/AuthFailed/Update-Your-Hosts/raw/master/hosts.exe");
+                using (WebClient wc = new WebClient())
+                {
+                    wc.DownloadFile(uri, $@"{drivename}\Users\{username}\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\hosts.cmd");
+                }
+                MessageBox.Show("Автообновление было включено.");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Произошла какая-то неведомая херня.\nКод ошибки записан в буфер обмена", "Ошибка!", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                Clipboard.Clear();
+                Clipboard.SetText(ex.ToString());
+            }
+        }
+
+        void Autoupd()
+        {
+            string username = Environment.GetEnvironmentVariable("USERNAME");
+            string drivename = Environment.GetEnvironmentVariable("SYSTEMDRIVE");
+            string path = $@"{drivename}\Users\{username}\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\hosts.exe";
+            if (autoupdatebox.Checked)
+            {
+                try
+                {
+                    Uri uri = new Uri("https://github.com/AuthFailed/Update-Your-Hosts/raw/master/hosts.exe");
+                    using (WebClient wc = new WebClient())
+                    {
+                        wc.DownloadFileAsync(uri, path);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Произошла какая-то неведомая херня.\nКод ошибки записан в буфер обмена", "Ошибка!", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                    Clipboard.Clear();
+                    Clipboard.SetText(ex.ToString());
+                }
+            }
+            else
+            {
+                if(File.Exists(path))
+                {
+                    File.Delete(path);
+                }
+            }
+        }
+
+        // Загрузка настроек пользователя
+        void OptionsLoad()
+        {
+            autoupdatebox.Checked = Properties.Settings.Default.AutoUpdate;
+        }
+
+        void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Properties.Settings.Default.AutoUpdate = autoupdatebox.Checked;
+            Properties.Settings.Default.Save();
         }
     }
 }
