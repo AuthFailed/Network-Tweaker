@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
@@ -14,6 +15,22 @@ namespace Update_Your_Hosts
         public Form1()
         {
             InitializeComponent();
+        }
+
+        async void Form1_Load(object sender, EventArgs e)
+        {
+            OptionsLoad();
+            label4.Text += File.GetLastWriteTime(hosts).ToString("dd/MM/yyyy"); // Получаем дату последнего изменения фильтра
+            // Плавность появление формы
+            for (; Opacity < .93; Opacity += .04)
+                await Task.Delay(30);
+        }
+
+        // Подгрузка настроек из реестра
+        void OptionsLoad()
+        {
+            using (RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\Update Your Hosts", false))
+                autoupdatebox.Checked = key?.GetValue("AutoUpdate").ToString() == "1" ? true : false;
         }
 
         readonly string hosts = @"C:\Windows\System32\drivers\etc\hosts";
@@ -130,7 +147,8 @@ namespace Update_Your_Hosts
                     string[] array = File.ReadAllLines(hosts);
                     foreach (string ar in array)
                     {
-                        if (ar.Contains(richTextBox1.Text)) // А вдруг такой домен уже есть в фильтре
+                        string line = ar.Replace("0.0.0.0 ", "");
+                        if (line.Equals(richTextBox1.Text)) // А вдруг такой домен уже есть в фильтре
                         {
                             MessageBox.Show("Данный домен уже есть в фильтре", "Внимание!");
                             t++;
@@ -172,14 +190,6 @@ namespace Update_Your_Hosts
             label4.Text = "Последнее обновление: " + File.GetLastWriteTime(hosts).ToString("dd/MM/yyyy");
         }
 
-        async void Form1_Load(object sender, EventArgs e)
-        {
-            OptionsLoad();
-            Autoupd();
-            label4.Text += File.GetLastWriteTime(hosts).ToString("dd/MM/yyyy"); // Получаем дату последнего изменения фильтра
-            for (; Opacity < .93; Opacity += .04)
-                await Task.Delay(30);
-        }
 
         // Отрисовываем вертикальные вкладки
         void TabControl1_DrawItem(object sender, DrawItemEventArgs e)
@@ -255,48 +265,24 @@ namespace Update_Your_Hosts
             }
         }
 
-
-        // Сохраняем настройки
-        void Button5_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        void Button6_Click(object sender, EventArgs e)
-        {
-            string username = Environment.GetEnvironmentVariable("USERNAME");
-            string drivename = Environment.GetEnvironmentVariable("SYSTEMDRIVE");
-            try
-            {
-                Uri uri = new Uri("https://github.com/AuthFailed/Update-Your-Hosts/raw/master/hosts.exe");
-                using (WebClient wc = new WebClient())
-                {
-                    wc.DownloadFile(uri, $@"{drivename}\Users\{username}\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\hosts.cmd");
-                }
-                MessageBox.Show("Автообновление было включено.");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Произошла какая-то неведомая херня.\nКод ошибки записан в буфер обмена", "Ошибка!", MessageBoxButtons.OK, MessageBoxIcon.Hand);
-                Clipboard.Clear();
-                Clipboard.SetText(ex.ToString());
-            }
-        }
-
+        // Автоматическое обновление
         void Autoupd()
         {
-            string username = Environment.GetEnvironmentVariable("USERNAME");
-            string drivename = Environment.GetEnvironmentVariable("SYSTEMDRIVE");
-            string path = $@"{drivename}\Users\{username}\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\hosts.exe";
-            if (autoupdatebox.Checked)
+            string path = Environment.GetEnvironmentVariable("SYSTEMROOT");
+            // Проверяем включен ли чекбокс и отсутствие файла
+            if (autoupdatebox.Checked && !File.Exists(@"C:\Windows\hosts.exe"))
             {
+                // Качаем файл
                 try
                 {
                     Uri uri = new Uri("https://github.com/AuthFailed/Update-Your-Hosts/raw/master/hosts.exe");
                     using (WebClient wc = new WebClient())
                     {
-                        wc.DownloadFileAsync(uri, path);
+                        wc.DownloadFileAsync(uri, path + @"\hosts.exe");
                     }
+                    // Добавляем файл в автозагрузку с помощью реестра
+                    using (RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Run", true))
+                        key.SetValue("Hosts Update", $@"{path}\hosts.exe");
                 }
                 catch (Exception ex)
                 {
@@ -307,23 +293,69 @@ namespace Update_Your_Hosts
             }
             else
             {
-                if(File.Exists(path))
+                // Если находим либо включенный чекбокс, либо файл - удаляем из автозагрузки и удаляем файл
+                try
                 {
-                    File.Delete(path);
+                    if (File.Exists(path + @"\hosts.exe"))
+                        File.Delete(path + @"\hosts.exe");
+                    using (RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Run", true))
+                        if(key.GetValue("Hosts Update") != null)
+                            key.DeleteValue("Hosts Update");
+                }
+                catch
+                {
+                    MessageBox.Show("Не тыкай так часто!");
                 }
             }
         }
 
-        // Загрузка настроек пользователя
-        void OptionsLoad()
+        // Проверяем статус чекбокса
+        void Autoupdatebox_CheckedChanged(object sender, EventArgs e)
         {
-            autoupdatebox.Checked = Properties.Settings.Default.AutoUpdate;
+            using (RegistryKey key = Registry.CurrentUser.CreateSubKey(@"Software\Update Your Hosts", true))
+                if (autoupdatebox.Checked)
+                {
+                    {
+                        Autoupd();
+                    }
+                    key.SetValue("AutoUpdate", "1");
+                }
+                else
+                {
+                    {
+                        Autoupd();
+                    }
+                    key.SetValue("AutoUpdate", "0");
+                }
         }
 
-        void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        // Вывод описания каждого контрола в настройках
+        private void Autoupdatebox_MouseEnter(object sender, EventArgs e)
         {
-            Properties.Settings.Default.AutoUpdate = autoupdatebox.Checked;
-            Properties.Settings.Default.Save();
+            label5.Text = "Включает автоматическое обновление фильтров при каждой загрузке системы";
         }
+        private void Autoupdatebox_MouseLeave(object sender, EventArgs e)
+        {
+            label5.Text = "";
+        }
+
+        private void Button4_MouseEnter(object sender, EventArgs e)
+        {
+            label5.Text = "Восстанавливает прошлую версию фильтра, если таковая существует";
+        }
+        private void Button4_MouseLeave(object sender, EventArgs e)
+        {
+            label5.Text = "";
+        }
+
+        private void Button3_MouseEnter(object sender, EventArgs e)
+        {
+            label5.Text = "Устанавливает стандартные значения для фильтра, которые поставляются вместе с Windows";
+        }
+        private void Button3_MouseLeave(object sender, EventArgs e)
+        {
+            label5.Text = "";
+        }
+
     }
 }
