@@ -41,15 +41,22 @@
             this.label3 = new System.Windows.Forms.Label();
             this.button2 = new System.Windows.Forms.Button();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
+            this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.button5 = new System.Windows.Forms.Button();
+            this.richTextBox2 = new System.Windows.Forms.RichTextBox();
+            this.label7 = new System.Windows.Forms.Label();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.proxybox = new System.Windows.Forms.CheckBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
             this.button4 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
             this.autoupdatebox = new System.Windows.Forms.CheckBox();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
+            this.protocolbox = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
+            this.tabPage4.SuspendLayout();
             this.tabPage3.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -99,6 +106,7 @@
             this.tabControl1.Alignment = System.Windows.Forms.TabAlignment.Left;
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
+            this.tabControl1.Controls.Add(this.tabPage4);
             this.tabControl1.Controls.Add(this.tabPage3);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Top;
             this.tabControl1.DrawMode = System.Windows.Forms.TabDrawMode.OwnerDrawFixed;
@@ -173,7 +181,7 @@
             // 
             // tabPage2
             // 
-            this.tabPage2.BackColor = System.Drawing.Color.Transparent;
+            this.tabPage2.BackColor = System.Drawing.Color.WhiteSmoke;
             this.tabPage2.Controls.Add(this.label3);
             this.tabPage2.Controls.Add(this.button2);
             this.tabPage2.Controls.Add(this.richTextBox1);
@@ -215,9 +223,53 @@
             this.richTextBox1.TabIndex = 0;
             this.richTextBox1.Text = "";
             // 
+            // tabPage4
+            // 
+            this.tabPage4.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.tabPage4.Controls.Add(this.button5);
+            this.tabPage4.Controls.Add(this.richTextBox2);
+            this.tabPage4.Controls.Add(this.label7);
+            this.tabPage4.Location = new System.Drawing.Point(124, 4);
+            this.tabPage4.Name = "tabPage4";
+            this.tabPage4.Size = new System.Drawing.Size(453, 198);
+            this.tabPage4.TabIndex = 3;
+            this.tabPage4.Text = "Изменение";
+            // 
+            // button5
+            // 
+            this.button5.Font = new System.Drawing.Font("Microsoft YaHei", 9F);
+            this.button5.Location = new System.Drawing.Point(168, 171);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(144, 24);
+            this.button5.TabIndex = 5;
+            this.button5.Text = "Изменить";
+            this.button5.UseVisualStyleBackColor = true;
+            this.button5.Click += new System.EventHandler(this.Button5_Click);
+            // 
+            // richTextBox2
+            // 
+            this.richTextBox2.Font = new System.Drawing.Font("Microsoft YaHei", 9F);
+            this.richTextBox2.Location = new System.Drawing.Point(3, 33);
+            this.richTextBox2.Name = "richTextBox2";
+            this.richTextBox2.Size = new System.Drawing.Size(447, 132);
+            this.richTextBox2.TabIndex = 4;
+            this.richTextBox2.Text = "";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Font = new System.Drawing.Font("Google Sans", 12F, System.Drawing.FontStyle.Bold);
+            this.label7.Location = new System.Drawing.Point(141, 10);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(171, 20);
+            this.label7.TabIndex = 3;
+            this.label7.Text = "Изменение фильтра";
+            // 
             // tabPage3
             // 
-            this.tabPage3.BackColor = System.Drawing.Color.Transparent;
+            this.tabPage3.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.tabPage3.Controls.Add(this.protocolbox);
+            this.tabPage3.Controls.Add(this.proxybox);
             this.tabPage3.Controls.Add(this.label6);
             this.tabPage3.Controls.Add(this.label5);
             this.tabPage3.Controls.Add(this.button4);
@@ -228,7 +280,39 @@
             this.tabPage3.Size = new System.Drawing.Size(453, 198);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Настройки";
-            this.tabPage3.ToolTipText = "Настройки";
+            this.tabPage3.ToolTipText = "Настройте работу программы";
+            // 
+            // proxybox
+            // 
+            this.proxybox.AutoSize = true;
+            this.proxybox.Location = new System.Drawing.Point(3, 53);
+            this.proxybox.Name = "proxybox";
+            this.proxybox.Size = new System.Drawing.Size(160, 23);
+            this.proxybox.TabIndex = 12;
+            this.proxybox.Text = "Прокси Антизапрета";
+            this.proxybox.UseVisualStyleBackColor = true;
+            this.proxybox.CheckedChanged += new System.EventHandler(this.Proxybox_CheckedChanged);
+            this.proxybox.MouseEnter += new System.EventHandler(this.CheckBox1_MouseEnter);
+            this.proxybox.MouseLeave += new System.EventHandler(this.CheckBox1_MouseLeave);
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("Google Sans", 12F, System.Drawing.FontStyle.Bold);
+            this.label6.Location = new System.Drawing.Point(178, 9);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(96, 20);
+            this.label6.TabIndex = 11;
+            this.label6.Text = "Настройки";
+            // 
+            // label5
+            // 
+            this.label5.Font = new System.Drawing.Font("Malgun Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.Location = new System.Drawing.Point(282, 77);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(171, 121);
+            this.label5.TabIndex = 10;
+            this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // button4
             // 
@@ -269,24 +353,18 @@
             this.autoupdatebox.MouseEnter += new System.EventHandler(this.Autoupdatebox_MouseEnter);
             this.autoupdatebox.MouseLeave += new System.EventHandler(this.Autoupdatebox_MouseLeave);
             // 
-            // label5
+            // protocolbox
             // 
-            this.label5.Font = new System.Drawing.Font("Malgun Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(282, 77);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(171, 121);
-            this.label5.TabIndex = 10;
-            this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Font = new System.Drawing.Font("Google Sans", 12F, System.Drawing.FontStyle.Bold);
-            this.label6.Location = new System.Drawing.Point(101, 9);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(250, 20);
-            this.label6.TabIndex = 11;
-            this.label6.Text = "Настройте работу программы";
+            this.protocolbox.AutoSize = true;
+            this.protocolbox.Location = new System.Drawing.Point(3, 76);
+            this.protocolbox.Name = "protocolbox";
+            this.protocolbox.Size = new System.Drawing.Size(264, 23);
+            this.protocolbox.TabIndex = 13;
+            this.protocolbox.Text = "Отключить бесполезные протоколы";
+            this.protocolbox.UseVisualStyleBackColor = true;
+            this.protocolbox.CheckedChanged += new System.EventHandler(this.Protocolbox_CheckedChanged);
+            this.protocolbox.MouseEnter += new System.EventHandler(this.Protocolbox_MouseEnter);
+            this.protocolbox.MouseLeave += new System.EventHandler(this.Protocolbox_MouseLeave);
             // 
             // Form1
             // 
@@ -307,6 +385,8 @@
             this.tabPage1.PerformLayout();
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
+            this.tabPage4.ResumeLayout(false);
+            this.tabPage4.PerformLayout();
             this.tabPage3.ResumeLayout(false);
             this.tabPage3.PerformLayout();
             this.ResumeLayout(false);
@@ -333,6 +413,12 @@
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.TabPage tabPage4;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Button button5;
+        private System.Windows.Forms.RichTextBox richTextBox2;
+        private System.Windows.Forms.CheckBox proxybox;
+        private System.Windows.Forms.CheckBox protocolbox;
     }
 }
 

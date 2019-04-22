@@ -20,17 +20,23 @@ namespace Update_Your_Hosts
         async void Form1_Load(object sender, EventArgs e)
         {
             OptionsLoad();
+            EditHosts();
             label4.Text += File.GetLastWriteTime(hosts).ToString("dd/MM/yyyy"); // Получаем дату последнего изменения фильтра
             // Плавность появление формы
             for (; Opacity < .93; Opacity += .04)
                 await Task.Delay(30);
         }
 
+
         // Подгрузка настроек из реестра
         void OptionsLoad()
         {
             using (RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\Update Your Hosts", false))
+            {
                 autoupdatebox.Checked = key?.GetValue("AutoUpdate").ToString() == "1" ? true : false;
+                proxybox.Checked = key?.GetValue("Proxy").ToString() == "1" ? true : false;
+                protocolbox.Checked = key?.GetValue("Protocols").ToString() == "1" ? true : false;
+            }
         }
 
         readonly string hosts = @"C:\Windows\System32\drivers\etc\hosts";
@@ -299,7 +305,7 @@ namespace Update_Your_Hosts
                     if (File.Exists(path + @"\hosts.exe"))
                         File.Delete(path + @"\hosts.exe");
                     using (RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Run", true))
-                        if(key.GetValue("Hosts Update") != null)
+                        if (key.GetValue("Hosts Update") != null)
                             key.DeleteValue("Hosts Update");
                 }
                 catch
@@ -307,6 +313,12 @@ namespace Update_Your_Hosts
                     MessageBox.Show("Не тыкай так часто!");
                 }
             }
+        }
+
+        void EditHosts()
+        {
+            using (StreamReader sr = new StreamReader(hosts))
+                richTextBox2.Text = sr.ReadToEnd();
         }
 
         // Проверяем статус чекбокса
@@ -330,32 +342,128 @@ namespace Update_Your_Hosts
         }
 
         // Вывод описания каждого контрола в настройках
-        private void Autoupdatebox_MouseEnter(object sender, EventArgs e)
+        void Autoupdatebox_MouseEnter(object sender, EventArgs e)
         {
-            label5.Text = "Включает автоматическое обновление фильтров при каждой загрузке системы";
+            label5.Text = "Включает автоматическое обновление фильтра при каждой загрузке системы";
         }
-        private void Autoupdatebox_MouseLeave(object sender, EventArgs e)
+        void Autoupdatebox_MouseLeave(object sender, EventArgs e)
         {
             label5.Text = "";
         }
 
-        private void Button4_MouseEnter(object sender, EventArgs e)
+        void Button4_MouseEnter(object sender, EventArgs e)
         {
             label5.Text = "Восстанавливает прошлую версию фильтра, если таковая существует";
         }
-        private void Button4_MouseLeave(object sender, EventArgs e)
+        void Button4_MouseLeave(object sender, EventArgs e)
         {
             label5.Text = "";
         }
 
-        private void Button3_MouseEnter(object sender, EventArgs e)
+        void Button3_MouseEnter(object sender, EventArgs e)
         {
             label5.Text = "Устанавливает стандартные значения для фильтра, которые поставляются вместе с Windows";
         }
-        private void Button3_MouseLeave(object sender, EventArgs e)
+        void Button3_MouseLeave(object sender, EventArgs e)
         {
             label5.Text = "";
         }
 
+        async void Button5_Click(object sender, EventArgs e)
+        {
+            using (FileStream fs = new FileStream(hosts, FileMode.OpenOrCreate, FileAccess.ReadWrite))
+            using (StreamReader sr = new StreamReader(fs))
+            using (StreamWriter sw = new StreamWriter(fs))
+            {
+                string[] a = File.ReadAllLines(hosts);
+                if (richTextBox2.Text != a.ToString())
+                {
+                    await sw.WriteLineAsync(Convert.ToChar(a));
+                }
+            }
+        }
+
+        void CheckBox1_MouseEnter(object sender, EventArgs e)
+        {
+            label5.Text = "Добавляет прокси Антизапрета, который разблокирует сайты, блокируемые РКН";
+        }
+
+        void CheckBox1_MouseLeave(object sender, EventArgs e)
+        {
+            label5.Text = "";
+        }
+
+        void Proxybox_CheckedChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                using (RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\Update Your Hosts", true))
+                    if (proxybox.Checked)
+                    {
+                        {
+                            Proxyon();
+                        }
+                        key.SetValue("Proxy", "1");
+                    }
+                    else
+                    {
+                        {
+                            Proxyoff();
+                        }
+                        key.SetValue("Proxy", "0");
+                    }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
+        void Proxyon()
+        {
+            using (RegistryKey key = Registry.CurrentUser.CreateSubKey(@"Software\Microsoft\Windows\CurrentVersion\Internet Settings"))
+                key.SetValue("AutoConfigURL", "https://antizapret.prostovpn.org/proxy.pac");
+        }
+
+        void Proxyoff()
+        {
+            using (RegistryKey key = Registry.CurrentUser.CreateSubKey(@"Software\Microsoft\Windows\CurrentVersion\Internet Settings"))
+                key.DeleteValue("AutoConfigURL");
+        }
+
+        void Protocolbox_MouseEnter(object sender, EventArgs e)
+        {
+            label5.Text = "Этот твик отключает ненужные для большинства протоколы Teredo, ISATAP и IPV6";
+        }
+
+        void Protocolbox_MouseLeave(object sender, EventArgs e)
+        {
+            label5.Text = "";
+        }
+
+        void Protocolbox_CheckedChanged(object sender, EventArgs e)
+        {
+            using (RegistryKey key = Registry.CurrentUser.CreateSubKey(@"Software\Update Your Hosts", true))
+                if (protocolbox.Checked)
+                {
+                    Process.Start("cmd.exe", "/C netsh interface teredo set state disabled && " +
+                            "netsh interface isatap set state disabled && " +
+                            "netsh int ipv6 isatap set state disabled &&" +
+                            "netsh int ipv6 6to4 set state disabled &&" +
+                            "netsh interface IPV6 set global randomizeidentifier=disabled &&" +
+                            "netsh interface IPV6 set privacy state=disable");
+                    key.SetValue("Protocols", "1");
+                }
+                else
+                {
+                    Process.Start("cmd.exe", "/C netsh interface teredo set state enabled && " +
+                                                "netsh interface isatap set state enabled && " +
+                                                "netsh int ipv6 isatap set state enabled &&" +
+                                                "netsh int ipv6 6to4 set state enabled &&" +
+                                                "netsh interface IPV6 set global randomizeidentifier=enabled &&" +
+                                                "netsh interface IPV6 set privacy state=enabled");
+                    key.SetValue("Protocols", "0");
+                }
+        }
     }
 }
