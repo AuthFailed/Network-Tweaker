@@ -30,34 +30,49 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.label1 = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.label2 = new System.Windows.Forms.Label();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.label4 = new System.Windows.Forms.Label();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.button1 = new System.Windows.Forms.Button();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.label3 = new System.Windows.Forms.Label();
             this.button2 = new System.Windows.Forms.Button();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
-            this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
             this.button5 = new System.Windows.Forms.Button();
             this.richTextBox2 = new System.Windows.Forms.RichTextBox();
             this.label7 = new System.Windows.Forms.Label();
-            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.label10 = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
+            this.label13 = new System.Windows.Forms.Label();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.button6 = new System.Windows.Forms.Button();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.comboBox2 = new System.Windows.Forms.ComboBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.tabPage5 = new System.Windows.Forms.TabPage();
+            this.protocolbox = new System.Windows.Forms.CheckBox();
             this.proxybox = new System.Windows.Forms.CheckBox();
             this.label6 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.button4 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
             this.autoupdatebox = new System.Windows.Forms.CheckBox();
-            this.protocolbox = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
-            this.tabPage4.SuspendLayout();
             this.tabPage3.SuspendLayout();
+            this.tabPage4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.tabPage5.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
@@ -69,20 +84,6 @@
             this.label1.Size = new System.Drawing.Size(211, 20);
             this.label1.TabIndex = 0;
             this.label1.Text = "Обновление файла hosts";
-            // 
-            // button1
-            // 
-            this.button1.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            this.button1.Font = new System.Drawing.Font("Microsoft YaHei", 9F);
-            this.button1.Location = new System.Drawing.Point(162, 111);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(129, 23);
-            this.button1.TabIndex = 1;
-            this.button1.TabStop = false;
-            this.button1.Text = "Обновить";
-            this.button1.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.Button1_Click);
             // 
             // progressBar1
             // 
@@ -106,8 +107,9 @@
             this.tabControl1.Alignment = System.Windows.Forms.TabAlignment.Left;
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
-            this.tabControl1.Controls.Add(this.tabPage4);
             this.tabControl1.Controls.Add(this.tabPage3);
+            this.tabControl1.Controls.Add(this.tabPage4);
+            this.tabControl1.Controls.Add(this.tabPage5);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Top;
             this.tabControl1.DrawMode = System.Windows.Forms.TabDrawMode.OwnerDrawFixed;
             this.tabControl1.Font = new System.Drawing.Font("Microsoft YaHei", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
@@ -179,6 +181,20 @@
             this.comboBox1.TabIndex = 4;
             this.comboBox1.TabStop = false;
             // 
+            // button1
+            // 
+            this.button1.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.button1.Font = new System.Drawing.Font("Microsoft YaHei", 9F);
+            this.button1.Location = new System.Drawing.Point(162, 111);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(129, 23);
+            this.button1.TabIndex = 1;
+            this.button1.TabStop = false;
+            this.button1.Text = "Обновить";
+            this.button1.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.Button1_Click);
+            // 
             // tabPage2
             // 
             this.tabPage2.BackColor = System.Drawing.Color.WhiteSmoke;
@@ -223,17 +239,17 @@
             this.richTextBox1.TabIndex = 0;
             this.richTextBox1.Text = "";
             // 
-            // tabPage4
+            // tabPage3
             // 
-            this.tabPage4.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.tabPage4.Controls.Add(this.button5);
-            this.tabPage4.Controls.Add(this.richTextBox2);
-            this.tabPage4.Controls.Add(this.label7);
-            this.tabPage4.Location = new System.Drawing.Point(124, 4);
-            this.tabPage4.Name = "tabPage4";
-            this.tabPage4.Size = new System.Drawing.Size(453, 198);
-            this.tabPage4.TabIndex = 3;
-            this.tabPage4.Text = "Изменение";
+            this.tabPage3.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.tabPage3.Controls.Add(this.button5);
+            this.tabPage3.Controls.Add(this.richTextBox2);
+            this.tabPage3.Controls.Add(this.label7);
+            this.tabPage3.Location = new System.Drawing.Point(124, 4);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Size = new System.Drawing.Size(453, 198);
+            this.tabPage3.TabIndex = 3;
+            this.tabPage3.Text = "Изменение";
             // 
             // button5
             // 
@@ -259,33 +275,213 @@
             // 
             this.label7.AutoSize = true;
             this.label7.Font = new System.Drawing.Font("Google Sans", 12F, System.Drawing.FontStyle.Bold);
-            this.label7.Location = new System.Drawing.Point(141, 10);
+            this.label7.Location = new System.Drawing.Point(141, 11);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(171, 20);
             this.label7.TabIndex = 3;
             this.label7.Text = "Изменение фильтра";
             // 
-            // tabPage3
+            // tabPage4
             // 
-            this.tabPage3.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.tabPage3.Controls.Add(this.protocolbox);
-            this.tabPage3.Controls.Add(this.proxybox);
-            this.tabPage3.Controls.Add(this.label6);
-            this.tabPage3.Controls.Add(this.label5);
-            this.tabPage3.Controls.Add(this.button4);
-            this.tabPage3.Controls.Add(this.button3);
-            this.tabPage3.Controls.Add(this.autoupdatebox);
-            this.tabPage3.Location = new System.Drawing.Point(124, 4);
-            this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(453, 198);
-            this.tabPage3.TabIndex = 2;
-            this.tabPage3.Text = "Настройки";
-            this.tabPage3.ToolTipText = "Настройте работу программы";
+            this.tabPage4.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.tabPage4.Controls.Add(this.label10);
+            this.tabPage4.Controls.Add(this.label12);
+            this.tabPage4.Controls.Add(this.label11);
+            this.tabPage4.Controls.Add(this.label13);
+            this.tabPage4.Controls.Add(this.pictureBox1);
+            this.tabPage4.Controls.Add(this.button6);
+            this.tabPage4.Controls.Add(this.checkBox1);
+            this.tabPage4.Controls.Add(this.textBox2);
+            this.tabPage4.Controls.Add(this.textBox1);
+            this.tabPage4.Controls.Add(this.comboBox2);
+            this.tabPage4.Controls.Add(this.label9);
+            this.tabPage4.Controls.Add(this.label8);
+            this.tabPage4.Location = new System.Drawing.Point(124, 4);
+            this.tabPage4.Name = "tabPage4";
+            this.tabPage4.Size = new System.Drawing.Size(453, 198);
+            this.tabPage4.TabIndex = 4;
+            this.tabPage4.Text = "DNS-Сервер";
+            // 
+            // label10
+            // 
+            this.label10.Font = new System.Drawing.Font("Microsoft YaHei", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label10.Location = new System.Drawing.Point(161, 137);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(52, 18);
+            this.label10.TabIndex = 19;
+            this.label10.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label12
+            // 
+            this.label12.Font = new System.Drawing.Font("Microsoft YaHei", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label12.Location = new System.Drawing.Point(105, 137);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(52, 18);
+            this.label12.TabIndex = 18;
+            this.label12.Text = "Пинг: ";
+            this.label12.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.label12.Click += new System.EventHandler(this.PictureBox1_Click);
+            // 
+            // label11
+            // 
+            this.label11.Font = new System.Drawing.Font("Microsoft YaHei", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label11.Location = new System.Drawing.Point(353, 137);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(52, 18);
+            this.label11.TabIndex = 17;
+            this.label11.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label13
+            // 
+            this.label13.Font = new System.Drawing.Font("Microsoft YaHei", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label13.Location = new System.Drawing.Point(297, 137);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(52, 18);
+            this.label13.TabIndex = 16;
+            this.label13.Text = "Пинг: ";
+            this.label13.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.label13.Click += new System.EventHandler(this.PictureBox1_Click);
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.BackColor = System.Drawing.Color.Transparent;
+            this.pictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.pictureBox1.Cursor = System.Windows.Forms.Cursors.Default;
+            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
+            this.pictureBox1.Location = new System.Drawing.Point(265, 105);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(29, 29);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox1.TabIndex = 12;
+            this.pictureBox1.TabStop = false;
+            this.pictureBox1.Click += new System.EventHandler(this.PictureBox1_Click);
+            // 
+            // button6
+            // 
+            this.button6.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.button6.Font = new System.Drawing.Font("Microsoft YaHei", 9F);
+            this.button6.Location = new System.Drawing.Point(109, 163);
+            this.button6.Name = "button6";
+            this.button6.Size = new System.Drawing.Size(304, 23);
+            this.button6.TabIndex = 11;
+            this.button6.TabStop = false;
+            this.button6.Text = "Применить DNS";
+            this.button6.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.button6.UseVisualStyleBackColor = true;
+            this.button6.Click += new System.EventHandler(this.Button6_Click);
+            // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.BackColor = System.Drawing.Color.Transparent;
+            this.checkBox1.Location = new System.Drawing.Point(127, 81);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(123, 23);
+            this.checkBox1.TabIndex = 10;
+            this.checkBox1.Text = "Редактировать";
+            this.checkBox1.UseVisualStyleBackColor = false;
+            this.checkBox1.CheckedChanged += new System.EventHandler(this.CheckBox1_CheckedChanged);
+            // 
+            // textBox2
+            // 
+            this.textBox2.Font = new System.Drawing.Font("Ebrima", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBox2.Location = new System.Drawing.Point(301, 105);
+            this.textBox2.Name = "textBox2";
+            this.textBox2.ReadOnly = true;
+            this.textBox2.Size = new System.Drawing.Size(149, 29);
+            this.textBox2.TabIndex = 9;
+            this.textBox2.TabStop = false;
+            this.textBox2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.textBox2.WordWrap = false;
+            // 
+            // textBox1
+            // 
+            this.textBox1.Font = new System.Drawing.Font("Ebrima", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBox1.Location = new System.Drawing.Point(109, 105);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.ReadOnly = true;
+            this.textBox1.Size = new System.Drawing.Size(149, 29);
+            this.textBox1.TabIndex = 8;
+            this.textBox1.TabStop = false;
+            this.textBox1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.textBox1.WordWrap = false;
+            // 
+            // comboBox2
+            // 
+            this.comboBox2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox2.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.comboBox2.Font = new System.Drawing.Font("Microsoft YaHei", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.comboBox2.FormattingEnabled = true;
+            this.comboBox2.Items.AddRange(new object[] {
+            "- По умолчанию",
+            "-- Настроить",
+            "1. RU - Yandex",
+            "2. US - Google Public DNS",
+            "3. US - OpenDNS",
+            "4. US - OpenDNS - 2",
+            "5. RU - AdGuard",
+            "6. AU - Cloudflare"});
+            this.comboBox2.Location = new System.Drawing.Point(148, 52);
+            this.comboBox2.Name = "comboBox2";
+            this.comboBox2.Size = new System.Drawing.Size(183, 25);
+            this.comboBox2.TabIndex = 7;
+            this.comboBox2.TabStop = false;
+            this.comboBox2.SelectedIndexChanged += new System.EventHandler(this.ComboBox2_SelectedIndexChanged);
+            // 
+            // label9
+            // 
+            this.label9.Font = new System.Drawing.Font("Microsoft YaHei", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label9.Location = new System.Drawing.Point(-3, 52);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(154, 18);
+            this.label9.TabIndex = 6;
+            this.label9.Text = "Выберите сервер:";
+            this.label9.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Font = new System.Drawing.Font("Google Sans", 12F, System.Drawing.FontStyle.Bold);
+            this.label8.Location = new System.Drawing.Point(121, 11);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(210, 20);
+            this.label8.TabIndex = 4;
+            this.label8.Text = "Изменение DNS-Сервера";
+            // 
+            // tabPage5
+            // 
+            this.tabPage5.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.tabPage5.Controls.Add(this.protocolbox);
+            this.tabPage5.Controls.Add(this.proxybox);
+            this.tabPage5.Controls.Add(this.label6);
+            this.tabPage5.Controls.Add(this.label5);
+            this.tabPage5.Controls.Add(this.button4);
+            this.tabPage5.Controls.Add(this.button3);
+            this.tabPage5.Controls.Add(this.autoupdatebox);
+            this.tabPage5.Location = new System.Drawing.Point(124, 4);
+            this.tabPage5.Name = "tabPage5";
+            this.tabPage5.Size = new System.Drawing.Size(453, 198);
+            this.tabPage5.TabIndex = 2;
+            this.tabPage5.Text = "Настройки";
+            this.tabPage5.ToolTipText = "Настройте работу программы";
+            // 
+            // protocolbox
+            // 
+            this.protocolbox.AutoSize = true;
+            this.protocolbox.Location = new System.Drawing.Point(3, 73);
+            this.protocolbox.Name = "protocolbox";
+            this.protocolbox.Size = new System.Drawing.Size(264, 23);
+            this.protocolbox.TabIndex = 13;
+            this.protocolbox.Text = "Отключить бесполезные протоколы";
+            this.protocolbox.UseVisualStyleBackColor = true;
+            this.protocolbox.CheckedChanged += new System.EventHandler(this.Protocolbox_CheckedChanged);
+            this.protocolbox.MouseEnter += new System.EventHandler(this.Protocolbox_MouseEnter);
+            this.protocolbox.MouseLeave += new System.EventHandler(this.Protocolbox_MouseLeave);
             // 
             // proxybox
             // 
             this.proxybox.AutoSize = true;
-            this.proxybox.Location = new System.Drawing.Point(3, 53);
+            this.proxybox.Location = new System.Drawing.Point(3, 50);
             this.proxybox.Name = "proxybox";
             this.proxybox.Size = new System.Drawing.Size(160, 23);
             this.proxybox.TabIndex = 12;
@@ -299,7 +495,7 @@
             // 
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("Google Sans", 12F, System.Drawing.FontStyle.Bold);
-            this.label6.Location = new System.Drawing.Point(178, 9);
+            this.label6.Location = new System.Drawing.Point(178, 11);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(96, 20);
             this.label6.TabIndex = 11;
@@ -343,7 +539,7 @@
             // autoupdatebox
             // 
             this.autoupdatebox.AutoSize = true;
-            this.autoupdatebox.Location = new System.Drawing.Point(3, 30);
+            this.autoupdatebox.Location = new System.Drawing.Point(3, 27);
             this.autoupdatebox.Name = "autoupdatebox";
             this.autoupdatebox.Size = new System.Drawing.Size(144, 23);
             this.autoupdatebox.TabIndex = 0;
@@ -352,19 +548,6 @@
             this.autoupdatebox.CheckedChanged += new System.EventHandler(this.Autoupdatebox_CheckedChanged);
             this.autoupdatebox.MouseEnter += new System.EventHandler(this.Autoupdatebox_MouseEnter);
             this.autoupdatebox.MouseLeave += new System.EventHandler(this.Autoupdatebox_MouseLeave);
-            // 
-            // protocolbox
-            // 
-            this.protocolbox.AutoSize = true;
-            this.protocolbox.Location = new System.Drawing.Point(3, 76);
-            this.protocolbox.Name = "protocolbox";
-            this.protocolbox.Size = new System.Drawing.Size(264, 23);
-            this.protocolbox.TabIndex = 13;
-            this.protocolbox.Text = "Отключить бесполезные протоколы";
-            this.protocolbox.UseVisualStyleBackColor = true;
-            this.protocolbox.CheckedChanged += new System.EventHandler(this.Protocolbox_CheckedChanged);
-            this.protocolbox.MouseEnter += new System.EventHandler(this.Protocolbox_MouseEnter);
-            this.protocolbox.MouseLeave += new System.EventHandler(this.Protocolbox_MouseLeave);
             // 
             // Form1
             // 
@@ -385,10 +568,13 @@
             this.tabPage1.PerformLayout();
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
-            this.tabPage4.ResumeLayout(false);
-            this.tabPage4.PerformLayout();
             this.tabPage3.ResumeLayout(false);
             this.tabPage3.PerformLayout();
+            this.tabPage4.ResumeLayout(false);
+            this.tabPage4.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            this.tabPage5.ResumeLayout(false);
+            this.tabPage5.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -396,13 +582,12 @@
         #endregion
 
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Button button1;
         private System.Windows.Forms.ProgressBar progressBar1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.TabPage tabPage2;
-        private System.Windows.Forms.TabPage tabPage3;
+        private System.Windows.Forms.TabPage tabPage5;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.RichTextBox richTextBox1;
         private System.Windows.Forms.Button button3;
@@ -413,12 +598,26 @@
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.TabPage tabPage4;
+        private System.Windows.Forms.TabPage tabPage3;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Button button5;
         private System.Windows.Forms.RichTextBox richTextBox2;
         private System.Windows.Forms.CheckBox proxybox;
         private System.Windows.Forms.CheckBox protocolbox;
+        private System.Windows.Forms.TabPage tabPage4;
+        private System.Windows.Forms.ComboBox comboBox2;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button button6;
+        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Label label13;
     }
 }
 

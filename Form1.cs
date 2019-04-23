@@ -5,6 +5,8 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Net;
+using System.Net.NetworkInformation;
+using System.ServiceProcess;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -37,6 +39,16 @@ namespace Update_Your_Hosts
                 proxybox.Checked = key?.GetValue("Proxy").ToString() == "1" ? true : false;
                 protocolbox.Checked = key?.GetValue("Protocols").ToString() == "1" ? true : false;
             }
+        }
+
+        void Cmd(string line)
+        {
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = "cmd",
+                Arguments = $"/c {line}",
+                WindowStyle = ProcessWindowStyle.Hidden
+            }).WaitForExit();
         }
 
         readonly string hosts = @"C:\Windows\System32\drivers\etc\hosts";
@@ -104,11 +116,68 @@ namespace Update_Your_Hosts
             }
         }
 
+        void Textreadonly()
+        {
+            textBox1.ReadOnly = true;
+            textBox2.ReadOnly = true;
+        }
+
+        void ComboBox2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            switch (comboBox2.SelectedIndex)
+            {
+                case 0:
+                    checkBox1.Checked = false;
+                    Textreadonly();
+                    textBox1.Text = "192 . 168 . 1 . 1";
+                    textBox2.Text = " . . . ";
+                    break;
+                case 1:
+                    textBox1.ReadOnly = false;
+                    textBox2.ReadOnly = false;
+                    break;
+                case 2:
+                    checkBox1.Checked = false;
+                    Textreadonly();
+                    textBox1.Text = "77 . 88 . 8 . 1";
+                    textBox2.Text = "77 . 88 . 8 . 8";
+                    break;
+                case 3:
+                    checkBox1.Checked = false;
+                    Textreadonly();
+                    textBox1.Text = "8 . 8 . 8 . 8";
+                    textBox2.Text = "8 . 8 . 4 . 4";
+                    break;
+                case 4:
+                    checkBox1.Checked = false;
+                    Textreadonly();
+                    textBox1.Text = "208 . 67 . 222 . 222";
+                    textBox2.Text = "208 . 67 . 220 . 220";
+                    break;
+                case 5:
+                    checkBox1.Checked = false;
+                    Textreadonly();
+                    textBox1.Text = "208 . 67 . 222 . 220";
+                    textBox2.Text = "208 . 67 . 220 . 222";
+                    break;
+                case 6:
+                    checkBox1.Checked = false;
+                    Textreadonly();
+                    textBox1.Text = "176 . 103 . 130 . 130";
+                    textBox2.Text = "176 . 103 . 130 . 131";
+                    break;
+                case 7:
+                    checkBox1.Checked = false;
+                    Textreadonly();
+                    textBox1.Text = "1 . 1 . 1 . 1";
+                    textBox2.Text = "1 . 0 . 0 . 1";
+                    break;
+            }
+        }
+
         // Загрузка и применение фильтра
         void Updatehosts(string line)
         {
-            ProcessStartInfo cmd;
-            cmd = new ProcessStartInfo("cmd", @"/c ipconfig /flushdns");
             try
             {
                 if (File.Exists(backup))
@@ -122,7 +191,7 @@ namespace Update_Your_Hosts
                     wc.DownloadFileCompleted += Web_DownloadFileCompleted;
                     wc.DownloadFileAsync(fileuri, hosts);
                 }
-                Process.Start(cmd);
+                Cmd("ipconfig / flushdns");
             }
             catch (Exception ex)
             {
@@ -135,8 +204,6 @@ namespace Update_Your_Hosts
         // Ручное добавления доменов в фильтр
         void Button2_Click(object sender, EventArgs e)
         {
-            ProcessStartInfo cmd;
-            cmd = new ProcessStartInfo("cmd", @"/c ipconfig /flushdns");
             try
             {
                 if (string.IsNullOrWhiteSpace(richTextBox1.Text)) // При пустой строке
@@ -169,7 +236,7 @@ namespace Update_Your_Hosts
                             sw.WriteLine("0.0.0.0 " + richTextBox1.Text);
                             MessageBox.Show("Домен " + richTextBox1.Text + " добавлен в черный список");
                         }
-                        Process.Start(cmd);
+                        Cmd("ipconfig / flushdns");
                     }
                 }
             }
@@ -237,13 +304,16 @@ namespace Update_Your_Hosts
         // Сбрасываем фильтр и восстанавливаем стандартное значение
         void Button3_Click(object sender, EventArgs e)
         {
-            ProcessStartInfo cmd;
-            cmd = new ProcessStartInfo("cmd", @"/c ipconfig /flushdns");
             Uri uri = new Uri("https://raw.githubusercontent.com/AuthFailed/Update-Your-Hosts/master/hosts");
             using (WebClient wc = new WebClient())
                 wc.DownloadFileAsync(uri, hosts);
             MessageBox.Show("Восстановлен стандартный файл hosts", "Внимание!");
-            Process.Start(cmd);
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = "cmd",
+                Arguments = @"/c ipconfig /flushdns",
+                WindowStyle = ProcessWindowStyle.Hidden
+            }).WaitForExit();
             label4.Text += File.GetLastWriteTime(hosts).ToString("dd/MM/yyyy");
         }
 
@@ -270,6 +340,15 @@ namespace Update_Your_Hosts
                 Clipboard.SetText(ex.ToString());
             }
         }
+
+
+        void EditHosts()
+        {
+            using (StreamReader sr = new StreamReader(hosts))
+                richTextBox2.Text = sr.ReadToEnd();
+        }
+
+
 
         // Автоматическое обновление
         void Autoupd()
@@ -314,14 +393,91 @@ namespace Update_Your_Hosts
                 }
             }
         }
-
-        void EditHosts()
+        private void CheckBox1_CheckedChanged(object sender, EventArgs e)
         {
-            using (StreamReader sr = new StreamReader(hosts))
-                richTextBox2.Text = sr.ReadToEnd();
+            if (checkBox1.Checked)
+            {
+                textBox1.Text = textBox1.Text.Replace(" ", "");
+                textBox2.Text = textBox2.Text.Replace(" ", "");
+                textBox1.ReadOnly = false;
+                textBox2.ReadOnly = false;
+                comboBox2.SelectedIndex = 1;
+            }
+            else
+            {
+                textBox1.Text = textBox1.Text.Replace(".", " . ");
+                textBox2.Text = textBox2.Text.Replace(".", " . ");
+                Textreadonly();
+                foreach (string line in comboBox2.Items)
+                {
+                    if (line == textBox1.Text)
+                        comboBox2.SelectedIndex = comboBox2.FindString(textBox2.Text);
+                }
+            }
         }
 
-        // Проверяем статус чекбокса
+        void Button6_Click(object sender, EventArgs e)
+        {
+            ServiceController sc = new ServiceController("Dnscache");
+            if (sc.Status != ServiceControllerStatus.Running)
+                Cmd("sc start Dnscache");
+            switch (comboBox2.SelectedIndex)
+            {
+                case 0:
+                    ChangeMainDns("192.168.1.1");
+                    ChangeExtraDns("");
+                    break;
+                case 1:
+                    ChangeMainDns(textBox1.Text.Trim());
+                    ChangeExtraDns(textBox2.Text.Trim());
+                    break;
+                case 2:
+                    ChangeMainDns("77.88.8.1");
+                    ChangeExtraDns("77.88.8.8");
+                    break;
+                case 3:
+                    ChangeMainDns("8.8.8.8");
+                    ChangeExtraDns("8.8.4.4");
+                    break;
+                case 4:
+                    ChangeMainDns("208.67.222.222");
+                    ChangeExtraDns("208.67.220.220");
+                    break;
+                case 5:
+                    ChangeMainDns("208.67.222.220");
+                    ChangeExtraDns("208.67.220.222");
+                    break;
+                case 6:
+                    ChangeMainDns("176.103.130.130");
+                    ChangeExtraDns("176.103.130.131");
+                    break;
+                case 7:
+                    ChangeMainDns("1.1.1.1");
+                    ChangeExtraDns("1.0.0.1");
+                    break;
+            }
+        }
+
+        void ChangeMainDns(string line)
+        {
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = "cmd",
+                Arguments = $"/c netsh interface ipv4 set dnsservers \"Ethernet\" static address={line} primary",
+                WindowStyle = ProcessWindowStyle.Hidden
+            }).WaitForExit();
+        }
+        void ChangeExtraDns(string line)
+        {
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = "cmd",
+                Arguments = $"/c netsh interface ipv4 add dnsservers \"Ethernet\" address={line}",
+                WindowStyle = ProcessWindowStyle.Hidden
+            }).WaitForExit();
+        }
+
+        // Проверяем статус чекбоксов
         void Autoupdatebox_CheckedChanged(object sender, EventArgs e)
         {
             using (RegistryKey key = Registry.CurrentUser.CreateSubKey(@"Software\Update Your Hosts", true))
@@ -339,6 +495,79 @@ namespace Update_Your_Hosts
                     }
                     key.SetValue("AutoUpdate", "0");
                 }
+        }
+        void Protocolbox_CheckedChanged(object sender, EventArgs e)
+        {
+            using (RegistryKey key = Registry.CurrentUser.CreateSubKey(@"Software\Update Your Hosts", true))
+                if (protocolbox.Checked)
+                {
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = "cmd",
+                        Arguments = "/c netsh interface teredo set state disabled & " +
+                            "netsh interface isatap set state disabled & " +
+                            "netsh int ipv6 isatap set state disabled &" +
+                            "netsh int ipv6 6to4 set state disabled &" +
+                            "netsh interface IPV6 set global randomizeidentifier=disabled &" +
+                            "netsh interface IPV6 set privacy state=disable",
+                        WindowStyle = ProcessWindowStyle.Hidden
+                    }).WaitForExit();
+                    key.SetValue("Protocols", "1");
+                }
+                else
+                {
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = "cmd",
+                        Arguments = "/c netsh interface teredo set state type=default servername=default refreshinterval=default clientport=default & " +
+                                                "netsh interface isatap set state enabled & " +
+                                                "netsh int ipv6 isatap set state enabled &" +
+                                                "netsh int ipv6 6to4 set state enabled &" +
+                                                "netsh interface IPV6 set global randomizeidentifier=enabled &" +
+                                                "netsh interface IPV6 set privacy state=enabled",
+                        WindowStyle = ProcessWindowStyle.Hidden
+                    }).WaitForExit();
+                    key.SetValue("Protocols", "0");
+                }
+        }
+
+        void Proxybox_CheckedChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                using (RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\Update Your Hosts", true))
+                    if (proxybox.Checked)
+                    {
+                        using (RegistryKey settingskey = Registry.CurrentUser.CreateSubKey(@"Software\Microsoft\Windows\CurrentVersion\Internet Settings"))
+                            settingskey.SetValue("AutoConfigURL", "https://antizapret.prostovpn.org/proxy.pac");
+                        key.SetValue("Proxy", "1");
+                    }
+                    else
+                    {
+                        using (RegistryKey settingskey = Registry.CurrentUser.CreateSubKey(@"Software\Microsoft\Windows\CurrentVersion\Internet Settings"))
+                            settingskey.DeleteValue("AutoConfigURL");
+                        key.SetValue("Proxy", "0");
+                    }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
+
+        async void Button5_Click(object sender, EventArgs e)
+        {
+            using (FileStream fs = new FileStream(hosts, FileMode.OpenOrCreate, FileAccess.ReadWrite))
+            using (StreamReader sr = new StreamReader(fs))
+            using (StreamWriter sw = new StreamWriter(fs))
+            {
+                string[] a = File.ReadAllLines(hosts);
+                if (richTextBox2.Text != a.ToString())
+                {
+                    await sw.WriteLineAsync(Convert.ToChar(a));
+                }
+            }
         }
 
         // Вывод описания каждого контрола в настройках
@@ -369,101 +598,64 @@ namespace Update_Your_Hosts
             label5.Text = "";
         }
 
-        async void Button5_Click(object sender, EventArgs e)
-        {
-            using (FileStream fs = new FileStream(hosts, FileMode.OpenOrCreate, FileAccess.ReadWrite))
-            using (StreamReader sr = new StreamReader(fs))
-            using (StreamWriter sw = new StreamWriter(fs))
-            {
-                string[] a = File.ReadAllLines(hosts);
-                if (richTextBox2.Text != a.ToString())
-                {
-                    await sw.WriteLineAsync(Convert.ToChar(a));
-                }
-            }
-        }
-
         void CheckBox1_MouseEnter(object sender, EventArgs e)
         {
             label5.Text = "Добавляет прокси Антизапрета, который разблокирует сайты, блокируемые РКН";
         }
-
         void CheckBox1_MouseLeave(object sender, EventArgs e)
         {
             label5.Text = "";
-        }
-
-        void Proxybox_CheckedChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                using (RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\Update Your Hosts", true))
-                    if (proxybox.Checked)
-                    {
-                        {
-                            Proxyon();
-                        }
-                        key.SetValue("Proxy", "1");
-                    }
-                    else
-                    {
-                        {
-                            Proxyoff();
-                        }
-                        key.SetValue("Proxy", "0");
-                    }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.ToString());
-            }
-        }
-
-        void Proxyon()
-        {
-            using (RegistryKey key = Registry.CurrentUser.CreateSubKey(@"Software\Microsoft\Windows\CurrentVersion\Internet Settings"))
-                key.SetValue("AutoConfigURL", "https://antizapret.prostovpn.org/proxy.pac");
-        }
-
-        void Proxyoff()
-        {
-            using (RegistryKey key = Registry.CurrentUser.CreateSubKey(@"Software\Microsoft\Windows\CurrentVersion\Internet Settings"))
-                key.DeleteValue("AutoConfigURL");
         }
 
         void Protocolbox_MouseEnter(object sender, EventArgs e)
         {
             label5.Text = "Этот твик отключает ненужные для большинства протоколы Teredo, ISATAP и IPV6";
         }
-
         void Protocolbox_MouseLeave(object sender, EventArgs e)
         {
             label5.Text = "";
         }
 
-        void Protocolbox_CheckedChanged(object sender, EventArgs e)
+        void PictureBox1_Click(object sender, EventArgs e)
         {
-            using (RegistryKey key = Registry.CurrentUser.CreateSubKey(@"Software\Update Your Hosts", true))
-                if (protocolbox.Checked)
-                {
-                    Process.Start("cmd.exe", "/C netsh interface teredo set state disabled && " +
-                            "netsh interface isatap set state disabled && " +
-                            "netsh int ipv6 isatap set state disabled &&" +
-                            "netsh int ipv6 6to4 set state disabled &&" +
-                            "netsh interface IPV6 set global randomizeidentifier=disabled &&" +
-                            "netsh interface IPV6 set privacy state=disable");
-                    key.SetValue("Protocols", "1");
-                }
-                else
-                {
-                    Process.Start("cmd.exe", "/C netsh interface teredo set state enabled && " +
-                                                "netsh interface isatap set state enabled && " +
-                                                "netsh int ipv6 isatap set state enabled &&" +
-                                                "netsh int ipv6 6to4 set state enabled &&" +
-                                                "netsh interface IPV6 set global randomizeidentifier=enabled &&" +
-                                                "netsh interface IPV6 set privacy state=enabled");
-                    key.SetValue("Protocols", "0");
-                }
+            label10.Text = "Ожидание";
+            label11.Text = "Ожидание";
+            switch (comboBox2.SelectedIndex)
+            {
+                case 0:
+                    break;
+                case 1:
+
+                    break;
+                case 2:
+                    Ping("77.88.8.1", "77.88.8.8");
+                    break;
+                case 3:
+                    Ping("8.8.8.8", "8.8.4.4");
+                    break;
+                case 4:
+                    Ping("208.67.222.222", "208.67.220.220");
+                    break;
+                case 5:
+                    Ping("208.67.222.220", "208.67.220.222");
+                    break;
+                case 6:
+                    Ping("176.103.130.130", "176.103.130.131");
+                    break;
+                case 7:
+                    Ping("1.1.1.1", "1.0.0.1");
+                    break;
+            }
+        }
+
+        void Ping(string mainaddress, string extraadress)
+        {
+            Ping ping = new Ping();
+            PingReply pingReply = null;
+            pingReply = ping.Send($"{mainaddress}");
+            label10.Text = pingReply.RoundtripTime.ToString() + " мс";
+            pingReply = ping.Send($"{extraadress}");
+            label11.Text = pingReply.RoundtripTime.ToString() + " мс";
         }
     }
 }
