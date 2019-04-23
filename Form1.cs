@@ -589,7 +589,6 @@ namespace Update_Your_Hosts
             }
         }
 
-
         async void Button5_Click(object sender, EventArgs e)
         {
             using (FileStream fs = new FileStream(hosts, FileMode.OpenOrCreate, FileAccess.ReadWrite))
