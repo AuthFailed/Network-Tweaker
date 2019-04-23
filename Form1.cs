@@ -30,7 +30,6 @@ namespace Update_Your_Hosts
                 await Task.Delay(30);
         }
 
-
         // Подгрузка настроек из реестра
         void OptionsLoad()
         {
@@ -276,7 +275,6 @@ namespace Update_Your_Hosts
             label4.Text = "Последнее обновление: " + File.GetLastWriteTime(hosts).ToString("dd/MM/yyyy");
         }
 
-
         // Отрисовываем вертикальные вкладки
         void TabControl1_DrawItem(object sender, DrawItemEventArgs e)
         {
@@ -295,7 +293,7 @@ namespace Update_Your_Hosts
             sText = ctlTab.TabPages[e.Index].Text;
             sizeText = g.MeasureString(sText, ctlTab.Font);
             iX = e.Bounds.Left + 6;
-            iY = e.Bounds.Top + (e.Bounds.Height - sizeText.Height) / 2;
+            iY = e.Bounds.Top + ((e.Bounds.Height - sizeText.Height) / 2);
             g.DrawString(sText, ctlTab.Font, Brushes.Black, iX, iY);
             e.Graphics.SetClip(e.Bounds);
             string text = tabControl1.TabPages[e.Index].Text;
@@ -306,7 +304,7 @@ namespace Update_Your_Hosts
                 e.Graphics.FillRectangle(b, e.Bounds);
 
             using (SolidBrush b = new SolidBrush(bSelected ? SystemColors.HighlightText : SystemColors.ControlText))
-                e.Graphics.DrawString(text, e.Font, b, e.Bounds.X + 2, e.Bounds.Y + (e.Bounds.Height - sz.Height) / 2);
+                e.Graphics.DrawString(text, e.Font, b, e.Bounds.X + 2, e.Bounds.Y + ((e.Bounds.Height - sz.Height) / 2));
 
             if (tabControl1.SelectedIndex == e.Index)
                 e.DrawFocusRectangle();
@@ -355,14 +353,11 @@ namespace Update_Your_Hosts
             }
         }
 
-
         void EditHosts()
         {
             using (StreamReader sr = new StreamReader(hosts))
                 richTextBox2.Text = sr.ReadToEnd();
         }
-
-
 
         // Автоматическое обновление
         void Autoupd()
