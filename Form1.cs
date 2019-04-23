@@ -1,4 +1,5 @@
-﻿using Microsoft.Win32;
+﻿using EnvDetection;
+using Microsoft.Win32;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -51,6 +52,14 @@ namespace Update_Your_Hosts
             }).WaitForExit();
         }
 
+        void Notification(string line)
+        {
+            Form2 childform = new Form2();
+            childform.Show();
+            childform.label2.Text = line;
+            Activate();
+        }
+
         readonly string hosts = @"C:\Windows\System32\drivers\etc\hosts";
         readonly string backup = @"C:\\Windows\System32\drivers\etc\hosts_bak";
         public string Path => hosts;
@@ -58,57 +67,71 @@ namespace Update_Your_Hosts
         // Определяем выбор фильтра и применяем его
         void Button1_Click(object sender, EventArgs e)
         {
-            label2.Text = "";
-            progressBar1.Value = 0;
             switch (comboBox1.SelectedIndex)
             {
                 case 0:
                     Updatehosts("http://sbc.io/hosts/hosts");
+                    Notification("Фильтр успешно обновлен.");
                     break;
                 case 1:
                     Updatehosts("http://sbc.io/hosts/alternates/fakenews/hosts");
+                    Notification("Фильтр успешно обновлен.");
                     break;
                 case 2:
                     Updatehosts("http://sbc.io/hosts/alternates/gambling/hosts");
+                    Notification("Фильтр успешно обновлен.");
                     break;
                 case 3:
                     Updatehosts("http://sbc.io/hosts/alternates/porn/hosts");
+                    Notification("Фильтр успешно обновлен.");
                     break;
                 case 4:
                     Updatehosts("http://sbc.io/hosts/alternates/social/hosts");
+                    Notification("Фильтр успешно обновлен.");
                     break;
                 case 5:
                     Updatehosts("http://sbc.io/hosts/alternates/fakenews-gambling/hosts");
+                    Notification("Фильтр успешно обновлен.");
                     break;
                 case 6:
                     Updatehosts("http://sbc.io/hosts/alternates/fakenews-porn/hosts");
+                    Notification("Фильтр успешно обновлен.");
                     break;
                 case 7:
                     Updatehosts("http://sbc.io/hosts/alternates/fakenews-social/hosts");
+                    Notification("Фильтр успешно обновлен.");
                     break;
                 case 8:
                     Updatehosts("http://sbc.io/hosts/alternates/gambling-porn/hosts");
+                    Notification("Фильтр успешно обновлен.");
                     break;
                 case 9:
                     Updatehosts("http://sbc.io/hosts/alternates/gambling-social/hosts");
+                    Notification("Фильтр успешно обновлен.");
                     break;
                 case 10:
                     Updatehosts("http://sbc.io/hosts/alternates/porn-social/hosts");
+                    Notification("Фильтр успешно обновлен.");
                     break;
                 case 11:
                     Updatehosts("http://sbc.io/hosts/alternates/fakenews-gambling-porn/hosts");
+                    Notification("Фильтр успешно обновлен.");
                     break;
                 case 12:
                     Updatehosts("http://sbc.io/hosts/alternates/fakenews-gambling-social/hosts");
+                    Notification("Фильтр успешно обновлен.");
                     break;
                 case 13:
                     Updatehosts("http://sbc.io/hosts/alternates/fakenews-porn-social/hosts");
+                    Notification("Фильтр успешно обновлен.");
                     break;
                 case 14:
                     Updatehosts("http://sbc.io/hosts/alternates/gambling-porn-social/hosts");
+                    Notification("Фильтр успешно обновлен.");
                     break;
                 case 15:
                     Updatehosts("http://sbc.io/hosts/alternates/fakenews-gambling-porn-social/hosts");
+                    Notification("Фильтр успешно обновлен.");
                     break;
                 default:
                     MessageBox.Show("Выберите фильтр!");
@@ -187,7 +210,6 @@ namespace Update_Your_Hosts
                 Uri fileuri = new Uri(line);
                 using (WebClient wc = new WebClient())
                 {
-                    wc.DownloadProgressChanged += Web_DownloadProgressChanged;
                     wc.DownloadFileCompleted += Web_DownloadFileCompleted;
                     wc.DownloadFileAsync(fileuri, hosts);
                 }
@@ -220,8 +242,7 @@ namespace Update_Your_Hosts
                     string[] array = File.ReadAllLines(hosts);
                     foreach (string ar in array)
                     {
-                        string line = ar.Replace("0.0.0.0 ", "");
-                        if (line.Equals(richTextBox1.Text)) // А вдруг такой домен уже есть в фильтре
+                        if (ar.Equals(richTextBox1.Text)) // А вдруг такой домен уже есть в фильтре
                         {
                             MessageBox.Show("Данный домен уже есть в фильтре", "Внимание!");
                             t++;
@@ -234,7 +255,7 @@ namespace Update_Your_Hosts
                         using (StreamWriter sw = new StreamWriter(hosts, append: true))
                         {
                             sw.WriteLine("0.0.0.0 " + richTextBox1.Text);
-                            MessageBox.Show("Домен " + richTextBox1.Text + " добавлен в черный список");
+                            Notification("Домен " + richTextBox1.Text + " добавлен в черный список");
                         }
                         Cmd("ipconfig / flushdns");
                     }
@@ -249,17 +270,9 @@ namespace Update_Your_Hosts
             }
         }
 
-        // Показываем прогресс загрузки файла
-        void Web_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
-        {
-            label2.Text = e.ProgressPercentage.ToString() + "%";
-            progressBar1.Value = e.ProgressPercentage;
-        }
-
         // При успешной загрузке файла выводим уведомление об успехе и обновляем дату изменения фильтра
         void Web_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
         {
-            MessageBox.Show("Обновление завершено!\nИнтернет появится через 10-15 секунд!", "Внимание!");
             label4.Text = "Последнее обновление: " + File.GetLastWriteTime(hosts).ToString("dd/MM/yyyy");
         }
 
@@ -307,7 +320,7 @@ namespace Update_Your_Hosts
             Uri uri = new Uri("https://raw.githubusercontent.com/AuthFailed/Update-Your-Hosts/master/hosts");
             using (WebClient wc = new WebClient())
                 wc.DownloadFileAsync(uri, hosts);
-            MessageBox.Show("Восстановлен стандартный файл hosts", "Внимание!");
+            Notification("Восстановлен стандартный файл hosts");
             Process.Start(new ProcessStartInfo
             {
                 FileName = "cmd",
@@ -327,6 +340,7 @@ namespace Update_Your_Hosts
                     File.Delete(hosts);
                     File.Move(backup, hosts);
                     label4.Text += File.GetLastWriteTime(hosts).ToString("dd/MM/yyyy");
+                    Notification("Бэкап восстановлен");
                 }
                 else
                 {
@@ -418,6 +432,7 @@ namespace Update_Your_Hosts
 
         void Button6_Click(object sender, EventArgs e)
         {
+            progressBar2.Value = 0;
             ServiceController sc = new ServiceController("Dnscache");
             if (sc.Status != ServiceControllerStatus.Running)
                 Cmd("sc start Dnscache");
@@ -425,35 +440,59 @@ namespace Update_Your_Hosts
             {
                 case 0:
                     ChangeMainDns("192.168.1.1");
+                    progressBar2.Value = 50;
                     ChangeExtraDns("");
+                    progressBar2.Value = 100;
+                    Notification("DNS был успешно изменен");
                     break;
                 case 1:
                     ChangeMainDns(textBox1.Text.Trim());
+                    progressBar2.Value = 50;
                     ChangeExtraDns(textBox2.Text.Trim());
+                    progressBar2.Value = 100;
+                    Notification("DNS был успешно изменен");
                     break;
                 case 2:
                     ChangeMainDns("77.88.8.1");
+                    progressBar2.Value = 50;
                     ChangeExtraDns("77.88.8.8");
+                    progressBar2.Value = 100;
+                    Notification("DNS был успешно изменен");
                     break;
                 case 3:
                     ChangeMainDns("8.8.8.8");
+                    progressBar2.Value = 50;
                     ChangeExtraDns("8.8.4.4");
+                    progressBar2.Value = 100;
+                    Notification("DNS был успешно изменен");
                     break;
                 case 4:
                     ChangeMainDns("208.67.222.222");
+                    progressBar2.Value = 50;
                     ChangeExtraDns("208.67.220.220");
+                    progressBar2.Value = 100;
+                    Notification("DNS был успешно изменен");
                     break;
                 case 5:
                     ChangeMainDns("208.67.222.220");
+                    progressBar2.Value = 50;
                     ChangeExtraDns("208.67.220.222");
+                    progressBar2.Value = 100;
+                    Notification("DNS был успешно изменен");
                     break;
                 case 6:
                     ChangeMainDns("176.103.130.130");
+                    progressBar2.Value = 50;
                     ChangeExtraDns("176.103.130.131");
+                    progressBar2.Value = 100;
+                    Notification("DNS был успешно изменен");
                     break;
                 case 7:
                     ChangeMainDns("1.1.1.1");
+                    progressBar2.Value = 50;
                     ChangeExtraDns("1.0.0.1");
+                    progressBar2.Value = 100;
+                    Notification("DNS был успешно изменен");
                     break;
             }
         }
@@ -568,6 +607,7 @@ namespace Update_Your_Hosts
                     await sw.WriteLineAsync(Convert.ToChar(a));
                 }
             }
+            Notification("Фильтр успешно изменен");
         }
 
         // Вывод описания каждого контрола в настройках
@@ -625,7 +665,7 @@ namespace Update_Your_Hosts
                 case 0:
                     break;
                 case 1:
-
+                    Ping(textBox1.Text.Replace(" ", ""), textBox2.Text.Replace(" ", ""));
                     break;
                 case 2:
                     Ping("77.88.8.1", "77.88.8.8");
@@ -656,6 +696,33 @@ namespace Update_Your_Hosts
             label10.Text = pingReply.RoundtripTime.ToString() + " мс";
             pingReply = ping.Send($"{extraadress}");
             label11.Text = pingReply.RoundtripTime.ToString() + " мс";
+        }
+
+        void PictureBox2_Click(object sender, EventArgs e)
+        {
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = "explorer",
+                Arguments = $@"/n, /select, C:\Windows\System32\drivers\etc\hosts"
+            });
+        }
+
+        void PictureBox3_Click(object sender, EventArgs e)
+        {
+            foreach (Process process in Process.GetProcessesByName("regedit")) process.Kill();
+            string path = @"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Internet Settings";
+            Registry.CurrentUser.CreateSubKey(@"Software\Microsoft\Windows\CurrentVersion\Applets\Regedit")
+                .SetValue("LastKey", path);
+            Process.Start("regedit");
+        }
+
+        void PictureBox4_Click(object sender, EventArgs e)
+        {
+            foreach (Process process in Process.GetProcessesByName("regedit")) process.Kill();
+            string path = @"HKEY_CURRENT_USER\Software\Update Your Hosts";
+            Registry.CurrentUser.CreateSubKey(@"Software\Microsoft\Windows\CurrentVersion\Applets\Regedit")
+                .SetValue("LastKey", path);
+            Process.Start("regedit");
         }
     }
 }
