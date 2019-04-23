@@ -1,4 +1,4 @@
-# Обновление файла Hosts
+# Обновление файла Hosts [![CodeFactor](https://www.codefactor.io/repository/github/authfailed/update-your-hosts/badge/master)](https://www.codefactor.io/repository/github/authfailed/update-your-hosts/overview/master)
 Полезность программы заключается в:
 - Большом списке фильтров (Спасибо [@StevenBlack](https://github.com/stevenblack))
 - Удобном выборе фильтра 
