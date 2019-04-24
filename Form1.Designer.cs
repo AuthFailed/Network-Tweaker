@@ -1,4 +1,4 @@
-﻿namespace Update_Your_Hosts
+﻿namespace Upgrade_Your_Network
 {
     partial class Form1
     {
@@ -70,6 +70,8 @@
             this.button3 = new System.Windows.Forms.Button();
             this.autoupdatebox = new System.Windows.Forms.CheckBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.checkBox2 = new System.Windows.Forms.CheckBox();
+            this.pictureBox5 = new System.Windows.Forms.PictureBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
@@ -80,6 +82,7 @@
             this.tabPage5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -305,6 +308,7 @@
             this.tabPage4.Size = new System.Drawing.Size(453, 198);
             this.tabPage4.TabIndex = 4;
             this.tabPage4.Text = "DNS-Сервер";
+            this.tabPage4.ToolTipText = "Изменение DNS сервера";
             // 
             // comboBox2
             // 
@@ -463,6 +467,8 @@
             // tabPage5
             // 
             this.tabPage5.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.tabPage5.Controls.Add(this.pictureBox5);
+            this.tabPage5.Controls.Add(this.checkBox2);
             this.tabPage5.Controls.Add(this.pictureBox4);
             this.tabPage5.Controls.Add(this.pictureBox3);
             this.tabPage5.Controls.Add(this.protocolbox);
@@ -472,6 +478,7 @@
             this.tabPage5.Controls.Add(this.button4);
             this.tabPage5.Controls.Add(this.button3);
             this.tabPage5.Controls.Add(this.autoupdatebox);
+            this.tabPage5.ImageKey = "(отсутствует)";
             this.tabPage5.Location = new System.Drawing.Point(124, 4);
             this.tabPage5.Name = "tabPage5";
             this.tabPage5.Size = new System.Drawing.Size(453, 198);
@@ -591,6 +598,31 @@
             this.autoupdatebox.MouseEnter += new System.EventHandler(this.Autoupdatebox_MouseEnter);
             this.autoupdatebox.MouseLeave += new System.EventHandler(this.Autoupdatebox_MouseLeave);
             // 
+            // checkBox2
+            // 
+            this.checkBox2.AutoSize = true;
+            this.checkBox2.Location = new System.Drawing.Point(3, 96);
+            this.checkBox2.Name = "checkBox2";
+            this.checkBox2.Size = new System.Drawing.Size(343, 23);
+            this.checkBox2.TabIndex = 16;
+            this.checkBox2.Text = "Пункт \"Разрешить/Запретить доступ в интернет\"";
+            this.checkBox2.UseVisualStyleBackColor = true;
+            this.checkBox2.CheckedChanged += new System.EventHandler(this.CheckBox2_CheckedChanged);
+            // 
+            // pictureBox5
+            // 
+            this.pictureBox5.BackColor = System.Drawing.Color.Transparent;
+            this.pictureBox5.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.pictureBox5.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox5.Image")));
+            this.pictureBox5.Location = new System.Drawing.Point(339, 92);
+            this.pictureBox5.Name = "pictureBox5";
+            this.pictureBox5.Size = new System.Drawing.Size(25, 25);
+            this.pictureBox5.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox5.TabIndex = 17;
+            this.pictureBox5.TabStop = false;
+            this.toolTip1.SetToolTip(this.pictureBox5, "Открывает ветку реестра с этой настройкой");
+            this.pictureBox5.Click += new System.EventHandler(this.PictureBox5_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -620,6 +652,7 @@
             this.tabPage5.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -666,6 +699,8 @@
         private System.Windows.Forms.PictureBox pictureBox3;
         private System.Windows.Forms.PictureBox pictureBox4;
         private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.CheckBox checkBox2;
+        private System.Windows.Forms.PictureBox pictureBox5;
     }
 }
 

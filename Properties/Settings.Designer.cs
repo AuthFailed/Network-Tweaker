@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Update_Your_Hosts.Properties {
+namespace Upgrade_Your_Network.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]

@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Drawing;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace EnvDetection
+namespace Upgrade_Your_Network
 {
     public partial class Form2 : Form
     {
@@ -11,33 +12,30 @@ namespace EnvDetection
             InitializeComponent();
         }
 
-        async void ПлавноВкл()
+        private async Task SmoothOnAsync()
         {
-            for (; Opacity < .93; Opacity += .02)
-            {
-                await Task.Delay(2).ConfigureAwait(false);
-            }
+            for (; Opacity < .93; Opacity += .02) await Task.Delay(2).ConfigureAwait(false);
         }
 
-        async void ПлавноВыкл()
+        private async Task SmoothOffAsync()
         {
-            for (; Opacity > 0; Opacity -= .02)
-            {
-                await Task.Delay(2).ConfigureAwait(false);
-            }
+            for (; Opacity > 0; Opacity -= .02) await Task.Delay(2).ConfigureAwait(false);
             Close();
         }
 
-        async void Form2_Load(object sender, EventArgs e)
+        private async void Form2_Load(object sender, EventArgs e)
         {
-            int width = Screen.PrimaryScreen.Bounds.Width;
-            int height = Screen.PrimaryScreen.Bounds.Height;
-            Location = new System.Drawing.Point(width - Size.Width-3, height - Size.Height-34);
-            ПлавноВкл();
+            var width = Screen.PrimaryScreen.Bounds.Width;
+            var height = Screen.PrimaryScreen.Bounds.Height;
+            Location = new Point(width - Size.Width - 3, height - Size.Height - 34);
+            await SmoothOnAsync().ConfigureAwait(false);
             await Task.Delay(2000).ConfigureAwait(false);
-            ПлавноВыкл();
+            await SmoothOffAsync().ConfigureAwait(false);
         }
 
-        void PictureBox1_Click_1(object sender, EventArgs e) => Close();
+        private void PictureBox1_Click_1(object sender, EventArgs e)
+        {
+            Close();
+        }
     }
 }

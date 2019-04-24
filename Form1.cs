@@ -10,21 +10,22 @@ using System.Net.NetworkInformation;
 using System.ServiceProcess;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using EnvDetection;
 using Microsoft.Win32;
+using Update_Your_Hosts;
 
-namespace Update_Your_Hosts
+namespace Upgrade_Your_Network
 {
+    /// <inheritdoc />
     public partial class Form1 : Form
     {
-        public static string Backup { get; } = @"C:\\Windows\System32\drivers\etc\hosts_bak";
-
         public Form1()
         {
             InitializeComponent();
         }
 
-        public string Path { get; } = @"C:\Windows\System32\drivers\etc\hosts";
+        private static string Backup { get; } = @"C:\\Windows\System32\drivers\etc\hosts_bak";
+
+        private string Path { get; } = @"C:\Windows\System32\drivers\etc\hosts";
 
         private async void Form1_Load(object sender, EventArgs e)
         {
@@ -33,13 +34,12 @@ namespace Update_Your_Hosts
             label4.Text +=
                 File.GetLastWriteTime(Path).ToString("dd/MM/yyyy");
             for (; Opacity < .93; Opacity += .04)
-                await Task.Delay(30);
+                await Task.Delay(30).ConfigureAwait(false);
             var sc = new ServiceController(@"Dnscache");
-            if (sc.Status != ServiceControllerStatus.Running)
-            {
-                Cmd(@"sc start Dnscache");
-                Notification(@"В фонов режиме была запущена служба DNS");
-            }
+            if (sc.Status == ServiceControllerStatus.Running)
+                return;
+            CmdExe(@"sc start Dnscache");
+            Notification(@"В фонов режиме была запущена служба DNS");
         }
 
         private void OptionsLoad()
@@ -47,18 +47,20 @@ namespace Update_Your_Hosts
             using (var key =
                 Registry.CurrentUser.CreateSubKey(@"Software\Microsoft\Windows\CurrentVersion\Internet Settings", true))
             {
-                proxybox.Checked = key?.GetValue("AutoConfigURL")?.ToString() ==
-                                   @"https://antizapret.prostovpn.org/proxy.pac";
+                if (key != null)
+                    proxybox.Checked = key.GetValue("AutoConfigURL")?.ToString() ==
+                                       @"https://antizapret.prostovpn.org/proxy.pac";
             }
 
             using (var key = Registry.CurrentUser.OpenSubKey(@"Software\Update Your Hosts", false))
             {
                 autoupdatebox.Checked = key?.GetValue("AutoUpdate")?.ToString() == "1";
                 protocolbox.Checked = key?.GetValue("Protocols")?.ToString() == "1";
+                checkBox2.Checked = key?.GetValue("Shell")?.ToString() == "1";
             }
         }
 
-        private static void Cmd(string line)
+        private static void CmdExe(string line)
         {
             Process.Start(new ProcessStartInfo
                 {
@@ -71,15 +73,15 @@ namespace Update_Your_Hosts
 
         private void Notification(string line)
         {
-            using (var cf = new Form2())
+            var cf = new Form2();
             {
                 cf.Show();
                 cf.label2.Text = line;
             }
-
             Activate();
         }
 
+        // ReSharper disable once MethodTooLong
         private void Button1_Click(object sender, EventArgs e)
         {
             switch (comboBox1.SelectedIndex)
@@ -210,51 +212,55 @@ namespace Update_Your_Hosts
                     textBox1.Text = @"1 . 1 . 1 . 1";
                     textBox2.Text = @"1 . 0 . 0 . 1";
                     break;
+                default:
+                    textBox1.Text = "";
+                    textBox2.Text = "";
+                    break;
             }
         }
 
         private void UpdHosts(string line)
         {
+            if (File.Exists(Backup))
+                File.Delete(Backup);
+            if (File.Exists(Path))
+                File.Copy(Path, Backup);
+            var filer = new Uri(line);
             try
             {
-                if (File.Exists(Backup))
-                    File.Delete(Backup);
-                if (File.Exists(Path))
-                    File.Copy(Path, Backup);
-                var filer = new Uri(line);
                 using (var wc = new WebClient())
                 {
                     wc.DownloadFileCompleted += Web_DownloadFileCompleted;
                     wc.DownloadFileAsync(filer, Path);
                 }
 
-                Cmd(@"ipconfig / flushdns");
+                CmdExe(@"ipconfig / flushdns");
             }
             catch (Exception ex)
             {
                 MessageBox.Show(@"Произошла какая-то неведомая херня.\nКод ошибки записан в буфер обмена", @"Ошибка!",
                     MessageBoxButtons.OK, MessageBoxIcon.Hand);
                 Clipboard.Clear();
-                Clipboard.SetText(ex.ToString());
+                Clipboard.SetText(ex.Message);
             }
         }
 
         private void Button2_Click(object sender, EventArgs e)
         {
-            try
+            if (string.IsNullOrWhiteSpace(richTextBox1.Text))
             {
-                if (string.IsNullOrWhiteSpace(richTextBox1.Text))
-                {
-                    MessageBox.Show(@"Введите домен!", @"Внимание!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                else if (!richTextBox1.Text.Contains("."))
+                MessageBox.Show(@"Введите домен!", @"Внимание!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else
+            {
+                var array = File.ReadAllLines(Path);
+                if (!richTextBox1.Text.Contains("."))
                 {
                     MessageBox.Show(@"Домен должен быть вида сайт.зона", @"Внимание!");
                 }
                 else
                 {
                     var t = 0;
-                    var array = File.ReadAllLines(Path);
                     if (array.Any(ar => ar.Equals(richTextBox1.Text)))
                     {
                         MessageBox.Show(@"Данный домен уже есть в фильтре", @"Внимание!");
@@ -267,15 +273,9 @@ namespace Update_Your_Hosts
                         sw.WriteLine("0.0.0.0 " + richTextBox1.Text);
                         Notification(@"Домен " + richTextBox1.Text + @" добавлен в черный список");
                     }
-                    Cmd(@"ipconfig / flushdns");
+
+                    CmdExe(@"ipconfig / flushdns");
                 }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(@"Данный домен уже присутствует в фильтре.", @"Ошибка!", MessageBoxButtons.OK,
-                    MessageBoxIcon.Hand);
-                Clipboard.Clear();
-                Clipboard.SetText(ex.ToString());
             }
         }
 
@@ -337,26 +337,16 @@ namespace Update_Your_Hosts
 
         private void Button4_Click(object sender, EventArgs e)
         {
-            try
+            if (File.Exists(Backup))
             {
-                if (File.Exists(Backup))
-                {
-                    File.Delete(Path);
-                    File.Move(Backup, Path);
-                    label4.Text += File.GetLastWriteTime(Path).ToString("dd/MM/yyyy");
-                    Notification(@"Бэкап восстановлен");
-                }
-                else
-                {
-                    MessageBox.Show(@"Бэкапа нет");
-                }
+                File.Delete(Path);
+                File.Move(Backup, Path);
+                label4.Text += File.GetLastWriteTime(Path).ToString("dd/MM/yyyy");
+                Notification(@"Бэкап восстановлен");
             }
-            catch (Exception ex)
+            else
             {
-                MessageBox.Show(@"Произошла какая-то неведомая херня.\nКод ошибки записан в буфер обмена", @"Ошибка!",
-                    MessageBoxButtons.OK, MessageBoxIcon.Hand);
-                Clipboard.Clear();
-                Clipboard.SetText(ex.ToString());
+                MessageBox.Show(@"Бэкапа нет");
             }
         }
 
@@ -370,46 +360,66 @@ namespace Update_Your_Hosts
 
         private void AUpd()
         {
-            var path = Environment.GetEnvironmentVariable("SYSTEMROOT");
             if (autoupdatebox.Checked && !File.Exists(@"C:\Windows\hosts.exe"))
                 try
                 {
-                    var uri = new Uri("https://github.com/AuthFailed/Update-Your-Hosts/raw/master/hosts.exe");
-                    using (var wc = new WebClient())
-                    {
-                        wc.DownloadFileAsync(uri, path + @"\hosts.exe");
-                    }
-
-                    using (var key =
-                        Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Run", true))
-                    {
-                        key?.SetValue("Hosts Update", $@"{path}\hosts.exe");
-                    }
+                    AUpdTrue();
                 }
-                catch (Exception ex)
+                catch
                 {
-                    MessageBox.Show(@"Произошла какая-то неведомая херня.\nКод ошибки записан в буфер обмена",
-                        @"Ошибка!",
-                        MessageBoxButtons.OK, MessageBoxIcon.Hand);
-                    Clipboard.Clear();
-                    Clipboard.SetText(ex.ToString());
+                    MessageBox.Show(@"Не нажимайте так часто");
                 }
             else
                 try
                 {
-                    if (File.Exists(path + @"\hosts.exe"))
-                        File.Delete(path + @"\hosts.exe");
-                    using (var key =
-                        Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Run", true))
-                    {
-                        if (key?.GetValue("Hosts Update") != null)
-                            key.DeleteValue("Hosts Update");
-                    }
+                    AUpdFalse();
                 }
                 catch
                 {
-                    MessageBox.Show(@"Не тыкай так часто!");
+                    MessageBox.Show(@"Не нажимайте так часто");
                 }
+                finally
+                {
+                    AUpdFalse();
+                }
+        }
+
+        private static void AUpdTrue()
+        {
+            var path = Environment.GetEnvironmentVariable("SYSTEMROOT");
+            var uri = new Uri("https://github.com/AuthFailed/Update-Your-Hosts/raw/master/hosts.exe");
+            try
+            {
+                using (var wc = new WebClient())
+                {
+                    wc.DownloadFileAsync(uri, path + @"\hosts.exe");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(@"Что-то случилось и не удалось скачать файл");
+                Clipboard.Clear();
+                Clipboard.SetText(ex.ToString());
+            }
+
+            using (var key =
+                Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Run", true))
+            {
+                key?.SetValue("Hosts Update", $@"{path}\hosts.exe");
+            }
+        }
+
+        private static void AUpdFalse()
+        {
+            var path = Environment.GetEnvironmentVariable("SYSTEMROOT");
+            if (File.Exists(path + @"\hosts.exe"))
+                File.Delete(path + @"\hosts.exe");
+            using (var key =
+                Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Run", true))
+            {
+                if (key?.GetValue("Hosts Update") != null)
+                    key.DeleteValue("Hosts Update");
+            }
         }
 
         private void CheckBox1_CheckedChanged(object sender, EventArgs e)
@@ -525,16 +535,12 @@ namespace Update_Your_Hosts
             {
                 if (autoupdatebox.Checked)
                 {
-                    {
-                        AUpd();
-                    }
+                    AUpd();
                     key.SetValue("AutoUpdate", "1");
                 }
                 else
                 {
-                    {
-                        AUpd();
-                    }
+                    AUpd();
                     key.SetValue("AutoUpdate", "0");
                 }
             }
@@ -582,37 +588,30 @@ namespace Update_Your_Hosts
 
         private void Proxybox_CheckedChanged(object sender, EventArgs e)
         {
-            try
+            using (var key = Registry.CurrentUser.OpenSubKey(@"Software\Update Your Hosts", true))
             {
-                using (var key = Registry.CurrentUser.OpenSubKey(@"Software\Update Your Hosts", true))
+                if (proxybox.Checked)
                 {
-                    if (proxybox.Checked)
+                    using (var settings =
+                        Registry.CurrentUser.CreateSubKey(
+                            @"Software\Microsoft\Windows\CurrentVersion\Internet Settings"))
                     {
-                        using (var settings =
-                            Registry.CurrentUser.CreateSubKey(
-                                @"Software\Microsoft\Windows\CurrentVersion\Internet Settings"))
-                        {
-                            settings?.SetValue("AutoConfigURL", "https://antizapret.prostovpn.org/proxy.pac");
-                        }
-
-                        key?.SetValue("Proxy", "1");
+                        settings?.SetValue("AutoConfigURL", "https://antizapret.prostovpn.org/proxy.pac");
                     }
-                    else
-                    {
-                        using (var settings =
-                            Registry.CurrentUser.CreateSubKey(
-                                @"Software\Microsoft\Windows\CurrentVersion\Internet Settings"))
-                        {
-                            settings?.DeleteValue("AutoConfigURL");
-                        }
 
-                        key?.SetValue("Proxy", "0");
-                    }
+                    key?.SetValue("Proxy", "1");
                 }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.ToString());
+                else
+                {
+                    using (var settings =
+                        Registry.CurrentUser.CreateSubKey(
+                            @"Software\Microsoft\Windows\CurrentVersion\Internet Settings"))
+                    {
+                        settings?.DeleteValue("AutoConfigURL");
+                    }
+
+                    key?.SetValue("Proxy", "0");
+                }
             }
         }
 
@@ -622,10 +621,84 @@ namespace Update_Your_Hosts
             using (var sw = new StreamWriter(fs))
             {
                 var a = File.ReadAllLines(Path);
-                if (richTextBox2.Text != a.ToString()) await sw.WriteLineAsync(Convert.ToChar(a));
+                if (richTextBox2.Text != a.ToString()) await sw.WriteLineAsync(Convert.ToChar(a)).ConfigureAwait(false);
             }
 
             Notification(@"Фильтр успешно изменен");
+        }
+
+
+        private void PictureBox1_Click(object sender, EventArgs e)
+        {
+            label10.Text = @"Ожидание";
+            label11.Text = @"Ожидание";
+            switch (comboBox2.SelectedIndex)
+            {
+                case 0:
+                    Ping("192.168.1.1", "192.168.1.1");
+                    break;
+                case 1:
+                    Ping(textBox1.Text.Replace(" ", ""), textBox2.Text.Replace(" ", ""));
+                    break;
+                case 2:
+                    Ping("77.88.8.1", "77.88.8.8");
+                    break;
+                case 3:
+                    Ping("8.8.8.8", "8.8.4.4");
+                    break;
+                case 4:
+                    Ping("208.67.222.222", "208.67.220.220");
+                    break;
+                case 5:
+                    Ping("208.67.222.220", "208.67.220.222");
+                    break;
+                case 6:
+                    Ping("176.103.130.130", "176.103.130.131");
+                    break;
+                case 7:
+                    Ping("1.1.1.1", "1.0.0.1");
+                    break;
+                default:
+                    textBox1.Text = @"-";
+                    textBox2.Text = @"-";
+                    break;
+            }
+        }
+
+        // ReSharper disable once MissingSuppressionJustification
+        [SuppressMessage("ReSharper", "PossibleNullReferenceException")]
+        private void Ping(string main, string extra)
+        {
+            var ping = new Ping();
+            label10.Text = ping.Send($"{main}").RoundtripTime + @" мс";
+            label11.Text = ping.Send($"{extra}").RoundtripTime + @" мс";
+        }
+
+        private void PictureBox2_Click(object sender, EventArgs e)
+        {
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = "explorer",
+                Arguments = @"/n, /select, C:\Windows\System32\drivers\etc\hosts"
+            });
+        }
+
+        private void PictureBox3_Click(object sender, EventArgs e)
+        {
+            foreach (var process in Process.GetProcessesByName("regedit")) process.Kill();
+            var path = @"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Internet Settings";
+            Registry.CurrentUser.CreateSubKey(@"Software\Microsoft\Windows\CurrentVersion\Applets\Regedit")
+                ?.SetValue("LastKey", path);
+            Process.Start("regedit");
+        }
+
+        private void PictureBox4_Click(object sender, EventArgs e)
+        {
+            foreach (var process in Process.GetProcessesByName("regedit")) process.Kill();
+            var path = @"HKEY_CURRENT_USER\Software\Update Your Hosts";
+            Registry.CurrentUser.CreateSubKey(@"Software\Microsoft\Windows\CurrentVersion\Applets\Regedit")
+                ?.SetValue("LastKey", path);
+            Process.Start("regedit");
         }
 
         private void Autoupdatebox_MouseEnter(object sender, EventArgs e)
@@ -678,73 +751,61 @@ namespace Update_Your_Hosts
             label5.Text = "";
         }
 
-        private void PictureBox1_Click(object sender, EventArgs e)
-        {
-            label10.Text = @"Ожидание";
-            label11.Text = @"Ожидание";
-            switch (comboBox2.SelectedIndex)
-            {
-                case 0:
-                    Ping("192.168.1.1", "192.168.1.1");
-                    break;
-                case 1:
-                    Ping(textBox1.Text.Replace(" ", ""), textBox2.Text.Replace(" ", ""));
-                    break;
-                case 2:
-                    Ping("77.88.8.1", "77.88.8.8");
-                    break;
-                case 3:
-                    Ping("8.8.8.8", "8.8.4.4");
-                    break;
-                case 4:
-                    Ping("208.67.222.222", "208.67.220.220");
-                    break;
-                case 5:
-                    Ping("208.67.222.220", "208.67.220.222");
-                    break;
-                case 6:
-                    Ping("176.103.130.130", "176.103.130.131");
-                    break;
-                case 7:
-                    Ping("1.1.1.1", "1.0.0.1");
-                    break;
-                default:
-                    textBox1.Text = @"-";
-                    textBox2.Text = @"-";
-                    break;
-            }
-        }
-
-        [SuppressMessage("ReSharper", "PossibleNullReferenceException")]
-        private void Ping(string main, string extra)
-        {
-            var ping = new Ping();
-            label10.Text = ping.Send($"{main}").RoundtripTime + @" мс";
-            label11.Text = ping.Send($"{extra}").RoundtripTime + @" мс";
-        }
-
-        private void PictureBox2_Click(object sender, EventArgs e)
+        private void CheckBox2_CheckedChanged(object sender, EventArgs e)
         {
             Process.Start(new ProcessStartInfo
             {
-                FileName = "explorer",
-                Arguments = @"/n, /select, C:\Windows\System32\drivers\etc\hosts"
+                FileName = "cmd",
+                Arguments = "/c netsh advfirewall set allprofiles state on",
+                WindowStyle = ProcessWindowStyle.Hidden
             });
+            if (checkBox2.Checked)
+            {
+                using (var key = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Classes\exefile\shell\Firewall_Allow"))
+                {
+                    key?.SetValue("", @"Разрешить доступ в интернет");
+                    key?.SetValue("Extended", "");
+                    key?.SetValue("Icon", @"netcenter.dll,10");
+                }
+
+                using (var key = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Classes\exefile\shell\Firewall_Allow\command"))
+                {
+                    key?.SetValue("", @"netsh advfirewall firewall delete rule name=" + "\"%1\"");
+                }
+
+                using (var key = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Classes\exefile\shell\Firewall_Block"))
+                {
+                    key?.SetValue("", @"Запретить доступ в интернет");
+                    key?.SetValue("Extended", "");
+                    key?.SetValue("Icon", @"netcenter.dll,5");
+                }
+
+                using (var key = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Classes\exefile\shell\Firewall_Block\command"))
+                {
+                    key?.SetValue("",
+                        @"cmd /d /c ""netsh advfirewall firewall add rule name=""%1"" dir=in action=block program=""%1"" & netsh advfirewall firewall add rule name=""%1"" dir=out action=block program=""%1""");
+                }
+
+                using (var key = Registry.CurrentUser.CreateSubKey(@"Software\Update Your Hosts"))
+                {
+                    key?.SetValue("Shell", "1");
+                }
+            }
+            else
+            {
+                Registry.LocalMachine.DeleteSubKeyTree(@"SOFTWARE\Classes\exefile\shell\Firewall_Allow", false);
+                Registry.LocalMachine.DeleteSubKeyTree(@"SOFTWARE\Classes\exefile\shell\Firewall_Block", false);
+                using (var key = Registry.CurrentUser.CreateSubKey(@"Software\Update Your Hosts"))
+                {
+                    key?.SetValue("Shell", "0");
+                }
+            }
         }
 
-        private void PictureBox3_Click(object sender, EventArgs e)
+        private void PictureBox5_Click(object sender, EventArgs e)
         {
             foreach (var process in Process.GetProcessesByName("regedit")) process.Kill();
-            var path = @"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Internet Settings";
-            Registry.CurrentUser.CreateSubKey(@"Software\Microsoft\Windows\CurrentVersion\Applets\Regedit")
-                ?.SetValue("LastKey", path);
-            Process.Start("regedit");
-        }
-
-        private void PictureBox4_Click(object sender, EventArgs e)
-        {
-            foreach (var process in Process.GetProcessesByName("regedit")) process.Kill();
-            var path = @"HKEY_CURRENT_USER\Software\Update Your Hosts";
+            const string path = @"HKEY_LOCAL_MACHINE\SOFTWARE\Classes\exefile\shell";
             Registry.CurrentUser.CreateSubKey(@"Software\Microsoft\Windows\CurrentVersion\Applets\Regedit")
                 ?.SetValue("LastKey", path);
             Process.Start("regedit");
