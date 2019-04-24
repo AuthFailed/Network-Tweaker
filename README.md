@@ -1,4 +1,4 @@
-# Обновление файла Hosts [![CodeFactor](https://www.codefactor.io/repository/github/authfailed/update-your-hosts/badge/master)](https://www.codefactor.io/repository/github/authfailed/update-your-hosts/overview/master)
+# Upgrade Your Network [![CodeFactor](https://www.codefactor.io/repository/github/authfailed/upgrade-your-network/badge)](https://www.codefactor.io/repository/github/authfailed/upgrade-your-network)
 Полезность программы заключается в:
 - Большом списке фильтров (Спасибо [@StevenBlack](https://github.com/stevenblack))
 - Удобном выборе фильтра 
@@ -7,6 +7,7 @@
 - Возможности сброса фильтра на стандартное значение
 - Автоматическом создании файла бэкапа фильтра перед перезаписью новым
 - Возможности изменения DNS сервера
+![](review.gif)
 
 ### To-do list:
 - [x] Добавить выбор фильтра
