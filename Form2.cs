@@ -25,6 +25,7 @@ namespace Upgrade_Your_Network
 
         private async void Form2_Load(object sender, EventArgs e)
         {
+            CloseLoad();
             var width = Screen.PrimaryScreen.Bounds.Width;
             var height = Screen.PrimaryScreen.Bounds.Height;
             Location = new Point(width - Size.Width - 3, height - Size.Height - 34);
@@ -33,9 +34,12 @@ namespace Upgrade_Your_Network
             await SmoothOffAsync().ConfigureAwait(false);
         }
 
-        private void PictureBox1_Click_1(object sender, EventArgs e)
+        private void CloseLoad()
         {
-            Close();
+            pictureBox1.Click += (s, a) =>{ Close(); };
+            label1.Click += (s, a) =>{ Close(); };
+            label2.Click += (s, a) =>{ Close(); };
+            Click += (s, a) =>{ Close(); };
         }
     }
 }

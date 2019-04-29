@@ -43,7 +43,6 @@
             this.label1.Size = new System.Drawing.Size(120, 23);
             this.label1.TabIndex = 0;
             this.label1.Text = "Внимание!";
-            this.label1.Click += new System.EventHandler(this.PictureBox1_Click_1);
             // 
             // label2
             // 
@@ -52,7 +51,6 @@
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(290, 45);
             this.label2.TabIndex = 1;
-            this.label2.Click += new System.EventHandler(this.PictureBox1_Click_1);
             // 
             // pictureBox1
             // 
@@ -63,7 +61,6 @@
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox1.TabIndex = 2;
             this.pictureBox1.TabStop = false;
-            this.pictureBox1.Click += new System.EventHandler(this.PictureBox1_Click_1);
             // 
             // Form2
             // 
@@ -88,7 +85,6 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.TopMost = true;
             this.Load += new System.EventHandler(this.Form2_Load);
-            this.Click += new System.EventHandler(this.PictureBox1_Click_1);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
 

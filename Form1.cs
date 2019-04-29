@@ -5,13 +5,14 @@ using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Media;
 using System.Net;
-using System.Net.NetworkInformation;
 using System.ServiceProcess;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Win32;
-using Update_Your_Hosts;
+using Upgrade_Your_Network.Properties;
 
 namespace Upgrade_Your_Network
 {
@@ -29,8 +30,17 @@ namespace Upgrade_Your_Network
 
         private async void Form1_Load(object sender, EventArgs e)
         {
+            comboBox1.SelectedIndexChanged += (s, a) => { button1.Enabled = true; };
+            comboBox2.SelectedIndexChanged += (s, a) =>
+            {
+                pictureBox1.Enabled = true;
+                label12.Enabled = true;
+                label13.Enabled = true;
+            };
+            button6.Enabled = false;
+            FuncLoad();
+            tabControl1.SelectedIndexChanged += (s, a) => { Width = tabControl1.SelectedTab != tabPage5 ? 597 : 680; };
             OptionsLoad();
-            EditHosts();
             label4.Text +=
                 File.GetLastWriteTime(Path).ToString("dd/MM/yyyy");
             for (; Opacity < .93; Opacity += .04)
@@ -52,12 +62,58 @@ namespace Upgrade_Your_Network
                                        @"https://antizapret.prostovpn.org/proxy.pac";
             }
 
-            using (var key = Registry.CurrentUser.OpenSubKey(@"Software\Update Your Hosts", false))
+            using (var key = Registry.CurrentUser.OpenSubKey(@"Software\Upgrade Your Network", false))
             {
                 autoupdatebox.Checked = key?.GetValue("AutoUpdate")?.ToString() == "1";
                 protocolbox.Checked = key?.GetValue("Protocols")?.ToString() == "1";
                 checkBox2.Checked = key?.GetValue("Shell")?.ToString() == "1";
+                checkBox3.Checked = key?.GetValue("Optimize DnsCache")?.ToString() == "1";
             }
+        }
+
+        private void FuncLoad()
+        {
+            button1.MouseEnter += (s, e) => { button1.BackColor = Color.LightGray; };
+            button2.MouseEnter += (s, e) => { button2.BackColor = Color.LightGray; };
+            button3.MouseEnter += (s, e) => { button3.BackColor = Color.LightGray; };
+            button4.MouseEnter += (s, e) => { button4.BackColor = Color.LightGray; };
+            button6.MouseEnter += (s, e) => { button6.BackColor = Color.LightGray; };
+            button1.MouseLeave += (s, e) => { button1.BackColor = Color.Gainsboro; };
+            button2.MouseLeave += (s, e) => { button2.BackColor = Color.Gainsboro; };
+            button3.MouseLeave += (s, e) => { button3.BackColor = Color.Gainsboro; };
+            button4.MouseLeave += (s, e) => { button4.BackColor = Color.Gainsboro; };
+            button6.MouseLeave += (s, e) => { button6.BackColor = Color.Gainsboro; };
+            pictureBox1.MouseEnter += (s, e) => { pictureBox1.Image = Resources.Refresh_Gray; };
+            pictureBox1.MouseLeave += (s, e) => { pictureBox1.Image = Resources.Refresh_Lite; };
+            pictureBox2.MouseEnter += (s, e) => { pictureBox2.Image = Resources.Folder_Gray; };
+            pictureBox2.MouseLeave += (s, e) => { pictureBox2.Image = Resources.Folder_Lite; };
+            pictureBox6.MouseEnter += (s, e) => { pictureBox6.Image = Resources.Connections_Gray; };
+            pictureBox6.MouseLeave += (s, e) => { pictureBox6.Image = Resources.Connections_Lite; };
+            pictureBox6.MouseClick += (s, e) => { Process.Start("ncpa.cpl"); };
+            pictureBox7.MouseEnter += (s, e) => { pictureBox7.Image = Resources.TestPing_Gray; };
+            pictureBox7.MouseLeave += (s, e) => { pictureBox7.Image = Resources.TestPing_Lite; };
+            pictureBox7.MouseClick += (s, e) =>
+            {
+                var form = new Form3();
+                form.ShowDialog();
+            };
+            autoupdatebox.MouseEnter += (s, e) => { label5.Text = @"Включает автоматическое обновление фильтра при каждой загрузке системы"; };
+            proxybox.MouseEnter += (s, e) => { label5.Text = @"Добавляет прокси Антизапрета, который разблокирует сайты, блокируемые РКН"; };
+            protocolbox.MouseEnter += (s, e) => { label5.Text = @"Этот твик отключает ненужные для большинства протоколы Teredo, ISATAP и IPV6"; };
+            checkBox2.MouseEnter += (s, e) => { label5.Text = @"Добавляет в контекстное меню пункт для блокировки интернета"; };
+            checkBox3.MouseEnter += (s, e) => { label5.Text = @"Увеличение скорости загрузки веб-ресурсов"; };
+            button3.MouseEnter += (sender, e) =>
+            {
+                label5.Text = @"Устанавливает стандартные значения для фильтра, которые поставляются вместе с Windows";
+            };
+            button4.MouseEnter += (sender, e) => { label5.Text = @"Восстанавливает прошлую версию фильтра, если таковая существует"; };
+            autoupdatebox.MouseLeave += (s, e) => { label5.Text = @""; };
+            proxybox.MouseLeave += (s, e) => { label5.Text = ""; };
+            autoupdatebox.MouseLeave += (s, e) => { label5.Text = ""; };
+            checkBox2.MouseLeave += (s, e) => { label5.Text = ""; };
+            checkBox3.MouseLeave += (s, e) => { label5.Text = ""; };
+            button3.MouseLeave += (sender, e) => { label5.Text = ""; };
+            button4.MouseLeave += (sender, e) => { label5.Text = ""; };
         }
 
         private static void CmdExe(string line)
@@ -84,6 +140,8 @@ namespace Upgrade_Your_Network
         // ReSharper disable once MethodTooLong
         private void Button1_Click(object sender, EventArgs e)
         {
+            var audio = new SoundPlayer(Resources.s);
+            audio.Play();
             switch (comboBox1.SelectedIndex)
             {
                 case 0:
@@ -109,6 +167,7 @@ namespace Upgrade_Your_Network
                 case 5:
                     UpdHosts("http://sbc.io/hosts/alternates/fakenews-gambling/hosts");
                     Notification(@"Фильтр успешно обновлен.");
+                    audio.Play();
                     break;
                 case 6:
                     UpdHosts("http://sbc.io/hosts/alternates/fakenews-porn/hosts");
@@ -169,48 +228,56 @@ namespace Upgrade_Your_Network
                 case 0:
                     checkBox1.Checked = false;
                     TxtRdNl();
-                    textBox1.Text = @"192 . 168 . 1 . 1";
-                    textBox2.Text = @"192 . 168 . 1 . 1";
+                    textBox1.Text = @"192.168.1.1";
+                    textBox2.Text = @"192.168.1.1";
+                    button6.Enabled = true;
                     break;
                 case 1:
                     textBox1.ReadOnly = false;
                     textBox2.ReadOnly = false;
+                    button6.Enabled = true;
                     break;
                 case 2:
                     checkBox1.Checked = false;
                     TxtRdNl();
-                    textBox1.Text = @"77 . 88 . 8 . 1";
-                    textBox2.Text = @"77 . 88 . 8 . 8";
+                    textBox1.Text = @"77.88.8.1";
+                    textBox2.Text = @"77.88.8.8";
+                    button6.Enabled = true;
                     break;
                 case 3:
                     checkBox1.Checked = false;
                     TxtRdNl();
-                    textBox1.Text = @"8 . 8 . 8 . 8";
-                    textBox2.Text = @"8 . 8 . 4 . 4";
+                    textBox1.Text = @"8.8.8.8";
+                    textBox2.Text = @"8.8.4.4";
+                    button6.Enabled = true;
                     break;
                 case 4:
                     checkBox1.Checked = false;
                     TxtRdNl();
-                    textBox1.Text = @"208 . 67 . 222 . 222";
-                    textBox2.Text = @"208 . 67 . 220 . 220";
+                    textBox1.Text = @"208.67.222.222";
+                    textBox2.Text = @"208.67.220.220";
+                    button6.Enabled = true;
                     break;
                 case 5:
                     checkBox1.Checked = false;
                     TxtRdNl();
-                    textBox1.Text = @"208 . 67 . 222 . 220";
-                    textBox2.Text = @"208 . 67 . 220 . 222";
+                    textBox1.Text = @"208.67.222.220";
+                    textBox2.Text = @"208.67.220.222";
+                    button6.Enabled = true;
                     break;
                 case 6:
                     checkBox1.Checked = false;
                     TxtRdNl();
-                    textBox1.Text = @"176 . 103 . 130 . 130";
-                    textBox2.Text = @"176 . 103 . 130 . 131";
+                    textBox1.Text = @"176.103.130.130";
+                    textBox2.Text = @"176.103.130.131";
+                    button6.Enabled = true;
                     break;
                 case 7:
                     checkBox1.Checked = false;
                     TxtRdNl();
-                    textBox1.Text = @"1 . 1 . 1 . 1";
-                    textBox2.Text = @"1 . 0 . 0 . 1";
+                    textBox1.Text = @"1.1.1.1";
+                    textBox2.Text = @"1.0.0.1";
+                    button6.Enabled = true;
                     break;
                 default:
                     textBox1.Text = "";
@@ -247,6 +314,8 @@ namespace Upgrade_Your_Network
 
         private void Button2_Click(object sender, EventArgs e)
         {
+            var audio = new SoundPlayer(Resources.s);
+            audio.Play();
             if (string.IsNullOrWhiteSpace(richTextBox1.Text))
             {
                 MessageBox.Show(@"Введите домен!", @"Внимание!", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -318,6 +387,8 @@ namespace Upgrade_Your_Network
 
         private void Button3_Click(object sender, EventArgs e)
         {
+            var audio = new SoundPlayer(Resources.s);
+            audio.Play();
             var uri = new Uri("https://raw.githubusercontent.com/AuthFailed/Update-Your-Hosts/master/hosts");
             using (var wc = new WebClient())
             {
@@ -337,6 +408,8 @@ namespace Upgrade_Your_Network
 
         private void Button4_Click(object sender, EventArgs e)
         {
+            var audio = new SoundPlayer(Resources.s);
+            audio.Play();
             if (File.Exists(Backup))
             {
                 File.Delete(Path);
@@ -347,14 +420,6 @@ namespace Upgrade_Your_Network
             else
             {
                 MessageBox.Show(@"Бэкапа нет");
-            }
-        }
-
-        private void EditHosts()
-        {
-            using (var sr = new StreamReader(Path))
-            {
-                richTextBox2.Text = sr.ReadToEnd();
             }
         }
 
@@ -426,16 +491,12 @@ namespace Upgrade_Your_Network
         {
             if (checkBox1.Checked)
             {
-                textBox1.Text = textBox1.Text.Replace(" ", "");
-                textBox2.Text = textBox2.Text.Replace(" ", "");
                 textBox1.ReadOnly = false;
                 textBox2.ReadOnly = false;
                 comboBox2.SelectedIndex = 1;
             }
             else
             {
-                textBox1.Text = textBox1.Text.Replace(".", " . ");
-                textBox2.Text = textBox2.Text.Replace(".", " . ");
                 TxtRdNl();
                 foreach (string line in comboBox2.Items)
                     if (line == textBox1.Text)
@@ -445,11 +506,13 @@ namespace Upgrade_Your_Network
 
         private void Button6_Click(object sender, EventArgs e)
         {
+            var audio = new SoundPlayer(Resources.s);
+            audio.Play();
             progressBar2.Value = 0;
             switch (comboBox2.SelectedIndex)
             {
                 case 0:
-                    ChangeMainDns("192.168.1.1");
+                    ChangeMainDns(textBox1.Text);
                     progressBar2.Value = 50;
                     ChangeExtraDns("");
                     progressBar2.Value = 100;
@@ -463,44 +526,44 @@ namespace Upgrade_Your_Network
                     Notification(@"DNS был успешно изменен");
                     break;
                 case 2:
-                    ChangeMainDns("77.88.8.1");
+                    ChangeMainDns(textBox1.Text);
                     progressBar2.Value = 50;
-                    ChangeExtraDns("77.88.8.8");
+                    ChangeExtraDns(textBox2.Text);
                     progressBar2.Value = 100;
                     Notification(@"DNS был успешно изменен");
                     break;
                 case 3:
-                    ChangeMainDns("8.8.8.8");
+                    ChangeMainDns(textBox1.Text);
                     progressBar2.Value = 50;
-                    ChangeExtraDns("8.8.4.4");
+                    ChangeExtraDns(textBox2.Text);
                     progressBar2.Value = 100;
                     Notification(@"DNS был успешно изменен");
                     break;
                 case 4:
-                    ChangeMainDns("208.67.222.222");
+                    ChangeMainDns(textBox1.Text);
                     progressBar2.Value = 50;
-                    ChangeExtraDns("208.67.220.220");
+                    ChangeExtraDns(textBox2.Text);
                     progressBar2.Value = 100;
                     Notification(@"DNS был успешно изменен");
                     break;
                 case 5:
-                    ChangeMainDns("208.67.222.220");
+                    ChangeMainDns(textBox1.Text);
                     progressBar2.Value = 50;
-                    ChangeExtraDns("208.67.220.222");
+                    ChangeExtraDns(textBox2.Text);
                     progressBar2.Value = 100;
                     Notification(@"DNS был успешно изменен");
                     break;
                 case 6:
-                    ChangeMainDns("176.103.130.130");
+                    ChangeMainDns(textBox1.Text);
                     progressBar2.Value = 50;
-                    ChangeExtraDns("176.103.130.131");
+                    ChangeExtraDns(textBox2.Text);
                     progressBar2.Value = 100;
                     Notification(@"DNS был успешно изменен");
                     break;
                 case 7:
-                    ChangeMainDns("1.1.1.1");
+                    ChangeMainDns(textBox1.Text);
                     progressBar2.Value = 50;
-                    ChangeExtraDns("1.0.0.1");
+                    ChangeExtraDns(textBox2.Text);
                     progressBar2.Value = 100;
                     Notification(@"DNS был успешно изменен");
                     break;
@@ -531,7 +594,7 @@ namespace Upgrade_Your_Network
 
         private void Autoupdatebox_CheckedChanged(object sender, EventArgs e)
         {
-            using (var key = Registry.CurrentUser.CreateSubKey(@"Software\Update Your Hosts", true))
+            using (var key = Registry.CurrentUser.CreateSubKey(@"Software\Upgrade Your Network", true))
             {
                 if (autoupdatebox.Checked)
                 {
@@ -548,7 +611,7 @@ namespace Upgrade_Your_Network
 
         private void Protocolbox_CheckedChanged(object sender, EventArgs e)
         {
-            using (var key = Registry.CurrentUser.CreateSubKey(@"Software\Update Your Hosts", true))
+            using (var key = Registry.CurrentUser.CreateSubKey(@"Software\Upgrade Your Network", true))
             {
                 if (protocolbox.Checked)
                 {
@@ -588,7 +651,7 @@ namespace Upgrade_Your_Network
 
         private void Proxybox_CheckedChanged(object sender, EventArgs e)
         {
-            using (var key = Registry.CurrentUser.OpenSubKey(@"Software\Update Your Hosts", true))
+            using (var key = Registry.CurrentUser.OpenSubKey(@"Software\Upgrade Your Network", true))
             {
                 if (proxybox.Checked)
                 {
@@ -615,63 +678,120 @@ namespace Upgrade_Your_Network
             }
         }
 
-        private async void Button5_Click(object sender, EventArgs e)
-        {
-            using (var fs = new FileStream(Path, FileMode.OpenOrCreate, FileAccess.ReadWrite))
-            using (var sw = new StreamWriter(fs))
-            {
-                var a = File.ReadAllLines(Path);
-                if (richTextBox2.Text != a.ToString()) await sw.WriteLineAsync(Convert.ToChar(a)).ConfigureAwait(false);
-            }
-
-            Notification(@"Фильтр успешно изменен");
-        }
-
-
         private void PictureBox1_Click(object sender, EventArgs e)
         {
-            label10.Text = @"Ожидание";
-            label11.Text = @"Ожидание";
-            switch (comboBox2.SelectedIndex)
+            if ((textBox1.Text != "") & (textBox2.Text != ""))
             {
-                case 0:
-                    Ping("192.168.1.1", "192.168.1.1");
-                    break;
-                case 1:
-                    Ping(textBox1.Text.Replace(" ", ""), textBox2.Text.Replace(" ", ""));
-                    break;
-                case 2:
-                    Ping("77.88.8.1", "77.88.8.8");
-                    break;
-                case 3:
-                    Ping("8.8.8.8", "8.8.4.4");
-                    break;
-                case 4:
-                    Ping("208.67.222.222", "208.67.220.220");
-                    break;
-                case 5:
-                    Ping("208.67.222.220", "208.67.220.222");
-                    break;
-                case 6:
-                    Ping("176.103.130.130", "176.103.130.131");
-                    break;
-                case 7:
-                    Ping("1.1.1.1", "1.0.0.1");
-                    break;
-                default:
-                    textBox1.Text = @"-";
-                    textBox2.Text = @"-";
-                    break;
+                switch (comboBox2.SelectedIndex)
+                {
+                    case 0:
+                        Task.Run(PingMainAsync);
+                        Task.Run(PingExtraAsync);
+                        Task.Run(TtlGetAsync);
+                        break;
+                    case 1:
+
+                        Task.Run(PingMainAsync);
+                        Task.Run(PingExtraAsync);
+                        Task.Run(TtlGetAsync);
+                        break;
+                    case 2:
+                        Task.Run(PingMainAsync);
+                        Task.Run(PingExtraAsync);
+                        Task.Run(TtlGetAsync);
+                        break;
+                    case 3:
+                        Task.Run(PingMainAsync);
+                        Task.Run(PingExtraAsync);
+                        Task.Run(TtlGetAsync);
+                        break;
+                    case 4:
+                        Task.Run(PingMainAsync);
+                        Task.Run(PingExtraAsync);
+                        Task.Run(TtlGetAsync);
+                        break;
+                    case 5:
+                        Task.Run(PingMainAsync);
+                        Task.Run(PingExtraAsync);
+                        Task.Run(TtlGetAsync);
+                        break;
+                    case 6:
+                        Task.Run(PingMainAsync);
+                        Task.Run(PingExtraAsync);
+                        Task.Run(TtlGetAsync);
+                        break;
+                    case 7:
+                        Task.Run(PingMainAsync);
+                        Task.Run(PingExtraAsync);
+                        Task.Run(TtlGetAsync);
+                        break;
+                    default:
+                        textBox1.Text = @"-";
+                        textBox2.Text = @"-";
+                        break;
+                }
+            }
+            else if (textBox1.Text == "" && textBox2.Text != "")
+            {
+                label10.Text = "";
+                Task.Run(PingExtraAsync);
+                Task.Run(TtlGetAsync);
+            }
+            else if (textBox1.Text != "" && textBox2.Text == "")
+            {
+                label11.Text = "";
+                Task.Run(PingMainAsync);
+                Task.Run(TtlGetAsync);
             }
         }
 
         // ReSharper disable once MissingSuppressionJustification
         [SuppressMessage("ReSharper", "PossibleNullReferenceException")]
-        private void Ping(string main, string extra)
+        private async Task PingMainAsync()
         {
-            var ping = new Ping();
-            label10.Text = ping.Send($"{main}").RoundtripTime + @" мс";
-            label11.Text = ping.Send($"{extra}").RoundtripTime + @" мс";
+            var process = Process.Start(new ProcessStartInfo
+            {
+                FileName = "cmd",
+                Arguments = $"/c chcp 65001 & ping {textBox1.Text} -n 3",
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                CreateNoWindow = true
+            });
+            label10.Text = @"*";
+            await Task.Delay(700).ConfigureAwait(false);
+            label10.Text = @"**";
+            await Task.Delay(700).ConfigureAwait(false);
+            label10.Text = @"***";
+            await Task.Delay(700).ConfigureAwait(false);
+            if (process?.StandardOutput == null)
+                return;
+            var line = await process.StandardOutput.ReadToEndAsync().ConfigureAwait(false);
+            var match = Regex.Match(line, @"(.*?)Average = (.*?)ms");
+            label10.Text = match.Groups[2].Value + @" мс";
+        }
+
+        private async Task PingExtraAsync()
+        {
+            var process = Process.Start(new ProcessStartInfo
+            {
+                FileName = "cmd",
+                Arguments = $"/c chcp 65001 & ping {textBox2.Text} -n 3",
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                CreateNoWindow = true
+            });
+            label11.Text = @"*";
+            await Task.Delay(700).ConfigureAwait(false);
+            label11.Text = @"**";
+            await Task.Delay(700).ConfigureAwait(false);
+            label11.Text = @"***";
+            await Task.Delay(700).ConfigureAwait(false);
+            if (process?.StandardOutput == null)
+                return;
+            var line = await process.StandardOutput.ReadToEndAsync().ConfigureAwait(false);
+            var match = Regex.Match(line, @"(.*?)Average = (.*?)ms");
+
+            label11.Text = match.Groups[2].Value + @" мс";
         }
 
         private void PictureBox2_Click(object sender, EventArgs e)
@@ -683,72 +803,13 @@ namespace Upgrade_Your_Network
             });
         }
 
-        private void PictureBox3_Click(object sender, EventArgs e)
-        {
-            foreach (var process in Process.GetProcessesByName("regedit")) process.Kill();
-            var path = @"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Internet Settings";
-            Registry.CurrentUser.CreateSubKey(@"Software\Microsoft\Windows\CurrentVersion\Applets\Regedit")
-                ?.SetValue("LastKey", path);
-            Process.Start("regedit");
-        }
-
         private void PictureBox4_Click(object sender, EventArgs e)
         {
             foreach (var process in Process.GetProcessesByName("regedit")) process.Kill();
-            var path = @"HKEY_CURRENT_USER\Software\Update Your Hosts";
+            var path = @"HKEY_CURRENT_USER\Software\Upgrade Your Network";
             Registry.CurrentUser.CreateSubKey(@"Software\Microsoft\Windows\CurrentVersion\Applets\Regedit")
                 ?.SetValue("LastKey", path);
             Process.Start("regedit");
-        }
-
-        private void Autoupdatebox_MouseEnter(object sender, EventArgs e)
-        {
-            label5.Text = @"Включает автоматическое обновление фильтра при каждой загрузке системы";
-        }
-
-        private void Autoupdatebox_MouseLeave(object sender, EventArgs e)
-        {
-            label5.Text = "";
-        }
-
-        private void Button4_MouseEnter(object sender, EventArgs e)
-        {
-            label5.Text = @"Восстанавливает прошлую версию фильтра, если таковая существует";
-        }
-
-        private void Button4_MouseLeave(object sender, EventArgs e)
-        {
-            label5.Text = "";
-        }
-
-        private void Button3_MouseEnter(object sender, EventArgs e)
-        {
-            label5.Text = @"Устанавливает стандартные значения для фильтра, которые поставляются вместе с Windows";
-        }
-
-        private void Button3_MouseLeave(object sender, EventArgs e)
-        {
-            label5.Text = "";
-        }
-
-        private void CheckBox1_MouseEnter(object sender, EventArgs e)
-        {
-            label5.Text = @"Добавляет прокси Антизапрета, который разблокирует сайты, блокируемые РКН";
-        }
-
-        private void CheckBox1_MouseLeave(object sender, EventArgs e)
-        {
-            label5.Text = "";
-        }
-
-        private void Protocolbox_MouseEnter(object sender, EventArgs e)
-        {
-            label5.Text = @"Этот твик отключает ненужные для большинства протоколы Teredo, ISATAP и IPV6";
-        }
-
-        private void Protocolbox_MouseLeave(object sender, EventArgs e)
-        {
-            label5.Text = "";
         }
 
         private void CheckBox2_CheckedChanged(object sender, EventArgs e)
@@ -786,7 +847,7 @@ namespace Upgrade_Your_Network
                         @"cmd /d /c ""netsh advfirewall firewall add rule name=""%1"" dir=in action=block program=""%1"" & netsh advfirewall firewall add rule name=""%1"" dir=out action=block program=""%1""");
                 }
 
-                using (var key = Registry.CurrentUser.CreateSubKey(@"Software\Update Your Hosts"))
+                using (var key = Registry.CurrentUser.CreateSubKey(@"Software\Upgrade Your Network"))
                 {
                     key?.SetValue("Shell", "1");
                 }
@@ -795,20 +856,138 @@ namespace Upgrade_Your_Network
             {
                 Registry.LocalMachine.DeleteSubKeyTree(@"SOFTWARE\Classes\exefile\shell\Firewall_Allow", false);
                 Registry.LocalMachine.DeleteSubKeyTree(@"SOFTWARE\Classes\exefile\shell\Firewall_Block", false);
-                using (var key = Registry.CurrentUser.CreateSubKey(@"Software\Update Your Hosts"))
+                using (var key = Registry.CurrentUser.CreateSubKey(@"Software\Upgrade Your Network"))
                 {
                     key?.SetValue("Shell", "0");
                 }
             }
         }
 
-        private void PictureBox5_Click(object sender, EventArgs e)
+        private void CheckBox3_CheckedChanged(object sender, EventArgs e)
         {
-            foreach (var process in Process.GetProcessesByName("regedit")) process.Kill();
-            const string path = @"HKEY_LOCAL_MACHINE\SOFTWARE\Classes\exefile\shell";
-            Registry.CurrentUser.CreateSubKey(@"Software\Microsoft\Windows\CurrentVersion\Applets\Regedit")
-                ?.SetValue("LastKey", path);
-            Process.Start("regedit");
+            using (var key = Registry.LocalMachine.CreateSubKey(@"SYSTEM\CurrentControlSet\Services\Dnscache\Parameters"))
+            {
+                if (checkBox3.Checked)
+                {
+                    {
+                        key?.SetValue("CacheHashTableBucketSize", "10", RegistryValueKind.DWord);
+                        key?.SetValue("NegativeCacheTime", "300", RegistryValueKind.DWord);
+                        key?.SetValue("CacheHashTableSize", "211", RegistryValueKind.DWord);
+                        key?.SetValue("MaxCacheEntryTtlLimit", "86400", RegistryValueKind.DWord);
+                        key?.SetValue("MaxSOACacheEntryTtlLimit", "120", RegistryValueKind.DWord);
+                    }
+
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = "cmd",
+                        Arguments = "/c ipconfig /flushdns",
+                        WindowStyle = ProcessWindowStyle.Hidden
+                    });
+                    Registry.CurrentUser.CreateSubKey(@"Software\Upgrade Your Network")?.SetValue("Optimize DnsCache", "1");
+                }
+                else
+                {
+                    key?.SetValue("CacheHashTableBucketSize", "1", RegistryValueKind.DWord);
+                    key?.DeleteValue("NegativeCacheTime");
+                    key?.SetValue("CacheHashTableSize", "384", RegistryValueKind.DWord);
+                    key?.SetValue("MaxCacheEntryTtlLimit", "86400", RegistryValueKind.DWord);
+                    key?.SetValue("MaxSOACacheEntryTtlLimit", "300", RegistryValueKind.DWord);
+
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = "cmd",
+                        Arguments = "/c ipconfig /flushdns",
+                        WindowStyle = ProcessWindowStyle.Hidden
+                    });
+                    Registry.CurrentUser.CreateSubKey(@"Software\Upgrade Your Network")?.SetValue("Optimize DnsCache", "0");
+                }
+            }
+        }
+
+        private void TextBox1_TextChanged(object sender, EventArgs e)
+        {
+            if (!Regex.IsMatch(textBox1.Text, "[^0-9-.]"))
+                return;
+            textBox1.Text = textBox1.Text.Remove(textBox1.TextLength - 1);
+            textBox1.SelectionStart = textBox1.TextLength;
+        }
+
+        private void TextBox2_TextChanged(object sender, EventArgs e)
+        {
+            if (!Regex.IsMatch(textBox2.Text, "[^0-9-.]"))
+                return;
+            textBox2.Text = textBox2.Text.Remove(textBox2.TextLength - 1);
+            textBox2.SelectionStart = textBox2.TextLength;
+        }
+
+        private async void TabControl1_SelectedIndexChanged(object sender, EventArgs e) // если переключаемся на вкладку с паролями
+        {
+            if (tabControl1.SelectedIndex != 4)
+                return;
+            Process.Start(new ProcessStartInfo
+                {
+                    FileName = "cmd",
+                    Arguments = "/c sc start wlansvc",
+                    WindowStyle = ProcessWindowStyle.Hidden
+                })
+                ?.WaitForExit();
+            var process = Process.Start(new ProcessStartInfo
+            {
+                FileName = "cmd",
+                Arguments = "/c netsh wlan show profiles",
+                UseShellExecute = false,
+                CreateNoWindow = true,
+                RedirectStandardOutput = true
+            });
+            if (process?.StandardOutput != null)
+            {
+                var wifiInfo = await process.StandardOutput.ReadToEndAsync().ConfigureAwait(false);
+                var regex = new Regex(@"(.*?)All user profile(.*?): (.*?)");
+                var mc = regex.Matches(wifiInfo);
+                foreach (Match stringMatch in mc)
+                    comboBox3.Items.Add(stringMatch);
+            }
+        }
+
+        private async Task TtlGetAsync()
+        {
+            var process = Process.Start(new ProcessStartInfo
+            {
+                FileName = "cmd",
+                Arguments = $"/c chcp65001 & ping {textBox1.Text}",
+                UseShellExecute = false,
+                CreateNoWindow = true,
+                RedirectStandardOutput = true
+            });
+            if (process != null)
+            {
+                var line = await process.StandardOutput.ReadToEndAsync().ConfigureAwait(false);
+                var match = Regex.Match(line, "(.*?) TTL=(.*?)");
+                label15.Text = match.Groups[2].Value;
+            }
+        }
+
+        private async Task GetWiFiInfoAsync(string line) // парсим информацию об нужном вай-фае
+        {
+            var process = Process.Start(new ProcessStartInfo
+            {
+                FileName = "cmd",
+                Arguments = $"/c netsh wlan show profile \"{line}\" key=clear",
+                UseShellExecute = false,
+                CreateNoWindow = true,
+                RedirectStandardOutput = true
+            });
+            if (process?.StandardOutput != null)
+            {
+                var wifiInfo = await process.StandardOutput.ReadToEndAsync().ConfigureAwait(false);
+                var match = Regex.Match(wifiInfo, @"(.*?)Key Content(.*?): (.*?) Cost");
+                label14.Text = match.Groups[3].Value.Trim();
+            }
+        }
+
+        private void Button5_Click(object sender, EventArgs e)
+        {
+            var wiFiInfoAsync = GetWiFiInfoAsync(comboBox3.SelectedText);
         }
     }
 }
