@@ -3,11 +3,11 @@ using System.Drawing;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Upgrade_Your_Network
+namespace Network_Upgrade
 {
-    public partial class Form2 : Form
+    public partial class Notifications : Form
     {
-        public Form2()
+        public Notifications()
         {
             InitializeComponent();
         }

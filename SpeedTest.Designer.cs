@@ -1,6 +1,6 @@
-﻿namespace Upgrade_Your_Network
+﻿namespace Network_Upgrade
 {
-    partial class Form3
+    partial class SpeedTest
     {
         /// <summary>
         /// Required designer variable.

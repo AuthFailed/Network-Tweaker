@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Upgrade_Your_Network;
+using Network_Upgrade;
 
 namespace Update_Your_Hosts
 {
@@ -17,7 +17,7 @@ namespace Update_Your_Hosts
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            Application.Run(new MainWindows());
         }
     }
 }

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Upgrade_Your_Network.Properties {
+namespace Network_Upgrade.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace Upgrade_Your_Network.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Upgrade_Your_Network.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Network_Upgrade.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -57,6 +57,16 @@ namespace Upgrade_Your_Network.Properties {
             }
             set {
                 resourceCulture = value;
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap AnimatedRefresh {
+            get {
+                object obj = ResourceManager.GetObject("AnimatedRefresh", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
@@ -113,9 +123,9 @@ namespace Upgrade_Your_Network.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Refresh_Gray {
+        internal static System.Drawing.Bitmap RefreshLite {
             get {
-                object obj = ResourceManager.GetObject("Refresh-Gray", resourceCulture);
+                object obj = ResourceManager.GetObject("RefreshLite", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -123,9 +133,19 @@ namespace Upgrade_Your_Network.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Refresh_Lite {
+        internal static System.Drawing.Bitmap registry_gray {
             get {
-                object obj = ResourceManager.GetObject("Refresh-Lite", resourceCulture);
+                object obj = ResourceManager.GetObject("registry-gray", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap registry_lite {
+            get {
+                object obj = ResourceManager.GetObject("registry-lite", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
