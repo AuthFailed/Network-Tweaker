@@ -5,14 +5,15 @@ using System.Drawing;
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.ServiceProcess;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Win32;
-using Network_Upgrade.Properties;
+using Network_Tweaker.Properties;
 
-namespace Network_Upgrade
+namespace Network_Tweaker
 {
     public partial class MainWindows
     {
@@ -33,22 +34,35 @@ namespace Network_Upgrade
                 checkBox2.Checked = key?.GetValue("Shell")?.ToString() == "1";
                 checkBox3.Checked = key?.GetValue("Optimize DnsCache")?.ToString() == "1";
             }
+
+            LoadClrs();
+        }
+
+        private void LoadClrs()
+        {
+            autoupdatebox.ForeColor = autoupdatebox.Checked ? Color.FromArgb(9, 153, 246) : SystemColors.ControlDarkDark;
+            protocolbox.ForeColor = protocolbox.Checked ? Color.FromArgb(9, 153, 246) : SystemColors.ControlDarkDark;
+            checkBox2.ForeColor = checkBox2.Checked ? Color.FromArgb(9, 153, 246) : SystemColors.ControlDarkDark;
+            checkBox3.ForeColor = checkBox3.Checked ? Color.FromArgb(9, 153, 246) : SystemColors.ControlDarkDark;
+            proxybox.ForeColor = proxybox.Checked ? Color.FromArgb(9, 153, 246) : SystemColors.ControlDarkDark;
         }
 
         private void FuncLoad()
         {
-            button1.MouseEnter += (s, e) => { button1.BackColor = Color.LightGray; };
-            button2.MouseEnter += (s, e) => { button2.BackColor = Color.LightGray; };
-            button3.MouseEnter += (s, e) => { button3.BackColor = Color.LightGray; };
-            button4.MouseEnter += (s, e) => { button4.BackColor = Color.LightGray; };
-            button6.MouseEnter += (s, e) => { button6.BackColor = Color.LightGray; };
-            button1.MouseLeave += (s, e) => { button1.BackColor = Color.Gainsboro; };
-            button2.MouseLeave += (s, e) => { button2.BackColor = Color.Gainsboro; };
-            button3.MouseLeave += (s, e) => { button3.BackColor = Color.Gainsboro; };
-            button4.MouseLeave += (s, e) => { button4.BackColor = Color.Gainsboro; };
-            button6.MouseLeave += (s, e) => { button6.BackColor = Color.Gainsboro; };
-            label31.MouseEnter += (s, e) => { label31.BoldText(); };
-            label31.MouseLeave += (s, e) => { label31.MainText(); };
+            button1.MouseEnter += (s, e) => { button1.LghtGr(); };
+            button2.MouseEnter += (s, e) => { button2.LghtGr(); };
+            button3.MouseEnter += (s, e) => { button3.LghtGr(); };
+            button4.MouseEnter += (s, e) => { button4.LghtGr(); };
+            button6.MouseEnter += (s, e) => { button6.LghtGr(); };
+            button1.MouseLeave += (s, e) => { button1.Gnsbr(); };
+            button2.MouseLeave += (s, e) => { button2.Gnsbr(); };
+            button3.MouseLeave += (s, e) => { button3.Gnsbr(); };
+            button4.MouseLeave += (s, e) => { button4.Gnsbr(); };
+            button6.MouseLeave += (s, e) => { button6.Gnsbr(); };
+            label5.MouseEnter += (s, e) => { label5.Text = @"Я не пункт :)"; };
+            label5.MouseLeave += (s, e) => { label5.Text = @"Наведи мышкой на любой пункт :)"; };
+            label31.MouseEnter += (s, e) => { label31.BldTxt(); };
+            label31.MouseLeave += (s, e) => { label31.MnTxt(); };
             label31.Click += async (s, e) =>
             {
                 var httpClient = new HttpClient();
@@ -58,15 +72,15 @@ namespace Network_Upgrade
             };
             pictureBox1.MouseEnter += (s, e) => { pictureBox1.Image = Resources.AnimatedRefresh; };
             pictureBox1.MouseLeave += (s, e) => { pictureBox1.Image = Resources.RefreshLite; };
-            pictureBox2.MouseEnter += (s, e) => { pictureBox2.Image = Resources.Folder_Gray; };
-            pictureBox2.MouseLeave += (s, e) => { pictureBox2.Image = Resources.Folder_Lite; };
+            pictureBox2.MouseEnter += (s, e) => { pictureBox2.Image = Resources.folder; };
+            pictureBox2.MouseLeave += (s, e) => { pictureBox2.Image = Resources.folder_Lite; };
             pictureBox4.MouseEnter += (s, e) => { pictureBox4.Image = Resources.registry_gray; };
             pictureBox4.MouseLeave += (s, e) => { pictureBox4.Image = Resources.registry_lite; };
-            pictureBox6.MouseEnter += (s, e) => { pictureBox6.Image = Resources.Connections_Gray; };
-            pictureBox6.MouseLeave += (s, e) => { pictureBox6.Image = Resources.Connections_Lite; };
+            pictureBox6.MouseEnter += (s, e) => { pictureBox6.Image = Resources.network; };
+            pictureBox6.MouseLeave += (s, e) => { pictureBox6.Image = Resources.network_Lite; };
             pictureBox6.MouseClick += (s, e) => { Process.Start("ncpa.cpl"); };
-            pictureBox7.MouseEnter += (s, e) => { pictureBox7.Image = Resources.TestPing_Gray; };
-            pictureBox7.MouseLeave += (s, e) => { pictureBox7.Image = Resources.TestPing_Lite; };
+            pictureBox7.MouseEnter += (s, e) => { pictureBox7.Image = Resources.graph; };
+            pictureBox7.MouseLeave += (s, e) => { pictureBox7.Image = Resources.graph_Lite; };
             pictureBox7.MouseClick += (s, e) =>
             {
                 var form = new SpeedTest();
@@ -83,24 +97,25 @@ namespace Network_Upgrade
             };
             button3.MouseLeave += (sender, e) => { label5.Text = @"Наведи мышкой на любой пункт :)"; };
             button4.MouseEnter += (sender, e) => { label5.Text = @"Восстанавливает прошлую версию фильтра, если таковая существует"; };
-            button4.MouseLeave += (sender, e) => { label5.Text = @"Наведи мышкой на любой пункт :)"; };
-            autoupdatebox.MouseLeave += (s, e) => { label5.Text = @"Наведи мышкой на любой пункт :)"; };
-            proxybox.MouseLeave += (s, e) => { label5.Text = @"Наведи мышкой на любой пункт :)"; };
-            autoupdatebox.MouseLeave += (s, e) => { label5.Text = @"Наведи мышкой на любой пункт :)"; };
-            checkBox2.MouseLeave += (s, e) => { label5.Text = @"Наведи мышкой на любой пункт :)"; };
-            checkBox3.MouseLeave += (s, e) => { label5.Text = @"Наведи мышкой на любой пункт :)"; };
-            button3.MouseLeave += (sender, e) => { label5.Text = @"Наведи мышкой на любой пункт :)"; };
-            button4.MouseLeave += (sender, e) => { label5.Text = @"Наведи мышкой на любой пункт :)"; };
+            button4.MouseLeave += (sender, e) => { label5.DfLblTxt(); };
+            autoupdatebox.MouseLeave += (s, e) => { label5.DfLblTxt(); };
+            proxybox.MouseLeave += (s, e) => { label5.DfLblTxt(); };
+            autoupdatebox.MouseLeave += (s, e) => { label5.DfLblTxt(); };
+            checkBox2.MouseLeave += (s, e) => { label5.DfLblTxt(); };
+            protocolbox.MouseLeave += (s, e) => { label5.DfLblTxt(); };
+            checkBox3.MouseLeave += (s, e) => { label5.DfLblTxt(); };
+            button3.MouseLeave += (sender, e) => { label5.DfLblTxt(); };
+            button4.MouseLeave += (sender, e) => { label5.DfLblTxt(); };
         }
 
         private static void CmdExe(string line)
         {
             Process.Start(new ProcessStartInfo
-            {
-                FileName = "cmd",
-                Arguments = $"/c {line}",
-                WindowStyle = ProcessWindowStyle.Hidden
-            })
+                {
+                    FileName = "cmd",
+                    Arguments = $"/c {line}",
+                    WindowStyle = ProcessWindowStyle.Hidden
+                })
                 ?.WaitForExit();
         }
 
@@ -153,10 +168,8 @@ namespace Network_Upgrade
 
         private void TabControl1_DrawItem(object sender, DrawItemEventArgs e)
         {
-            var ctlTab = (TabControl)sender;
-
+            var ctlTab = (TabControl) sender;
             var g = e.Graphics;
-
             var sText = ctlTab.TabPages[e.Index].Text;
             var sizeText = g.MeasureString(sText, ctlTab.Font);
             var iX = e.Bounds.Left + 6;
@@ -209,16 +222,14 @@ namespace Network_Upgrade
                 }
         }
 
-        private static void AUpdTrue()
+        private static async void AUpdTrue()
         {
             var path = Environment.GetEnvironmentVariable("SYSTEMROOT");
             var uri = new Uri("https://github.com/AuthFailed/Update-Your-Hosts/raw/master/hosts.exe");
             try
             {
-                using (var wc = new WebClient())
-                {
-                    wc.DownloadFileAsync(uri, path + @"\hosts.exe");
-                }
+                var wc = new WebClient();
+                await wc.DownloadFileTaskAsync(uri, path + @"\hosts.exe").ConfigureAwait(true);
             }
             catch (Exception ex)
             {
@@ -227,11 +238,8 @@ namespace Network_Upgrade
                 Clipboard.SetText(ex.ToString());
             }
 
-            using (var key =
-                Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Run", true))
-            {
-                key?.SetValue("Hosts Update", $@"{path}\hosts.exe");
-            }
+            var key = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Run", true);
+            key?.SetValue("Hosts Update", $@"{path}\hosts.exe");
         }
 
         private static void AUpdFalse()
@@ -249,24 +257,12 @@ namespace Network_Upgrade
 
         private static void ChangeMainDns(string line)
         {
-            Process.Start(new ProcessStartInfo
-            {
-                FileName = "cmd",
-                Arguments = $"/c netsh interface ipv4 set dnsservers \"Ethernet\" static address={line} primary",
-                WindowStyle = ProcessWindowStyle.Hidden
-            })
-                ?.WaitForExit();
+            CmdExe($"netsh interface ipv4 set dnsservers \"Ethernet\" static address={line} primary");
         }
 
         private static void ChangeExtraDns(string line)
         {
-            Process.Start(new ProcessStartInfo
-            {
-                FileName = "cmd",
-                Arguments = $"/c netsh interface ipv4 add dnsservers \"Ethernet\" address={line}",
-                WindowStyle = ProcessWindowStyle.Hidden
-            })
-                ?.WaitForExit();
+            CmdExe($"netsh interface ipv4 add dnsservers \"Ethernet\" address={line}");
         }
 
         private async Task PingMainAsync()
@@ -319,12 +315,7 @@ namespace Network_Upgrade
         {
             if (tabControl1.SelectedIndex != 3)
                 return;
-            Process.Start(new ProcessStartInfo
-            {
-                FileName = "cmd",
-                Arguments = "/c sc start wlansvc",
-                WindowStyle = ProcessWindowStyle.Hidden
-            });
+            ChckWlansvc();
             var process = Process.Start(new ProcessStartInfo
             {
                 FileName = "cmd",
@@ -340,7 +331,7 @@ namespace Network_Upgrade
             if (wifiInfo.Contains("There is no wireless interface"))
             {
                 MessageBox.Show(@"В системе нет модуля Wi-Fi
-Данная вкладка вам недоступна");
+Данная вкладка вам недоступна", @"Внимание!");
             }
             else
             {
@@ -353,6 +344,15 @@ namespace Network_Upgrade
                     foreach (Match match in mc)
                         comboBox3.Items.Add(match.Groups[3].Value);
             }
+        }
+
+        private void ChckWlansvc()
+        {
+            var sc = new ServiceController(@"wlansvc");
+            if (sc.Status == ServiceControllerStatus.Running)
+                return;
+            CmdExe(@"sc start wlansvc");
+            Notification(@"В фонов режиме была запущена служба DNS");
         }
 
         private async Task TtlGetAsync()
@@ -401,7 +401,7 @@ namespace Network_Upgrade
             var link = Regex.Match(line, "\"lat\":(.*?),\"lon\":(.*?),", RegexOptions.Multiline);
             var latitude = link.Groups[1].ToString();
             var longitude = link.Groups[2].ToString();
-            linkLabel1.Click -= (s, e) => { Process.Start($"https://www.google.com/maps/search/?api=1&query={latitude},{longitude}"); };
+
             void Action()
             {
                 var match = Regex.Match(line,
@@ -415,7 +415,7 @@ namespace Network_Upgrade
             if (!line.Contains("invalid"))
             {
                 if (InvokeRequired)
-                    Invoke((Action)Action);
+                    Invoke((Action) Action);
                 else
                     Action();
             }

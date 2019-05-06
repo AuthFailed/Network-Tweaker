@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using Network_Upgrade;
 
-namespace Update_Your_Hosts
+namespace Network_Tweaker
 {
     internal static class Program
     {

@@ -1,4 +1,4 @@
-﻿namespace Network_Upgrade
+﻿namespace Network_Tweaker
 {
     partial class SpeedTest
     {

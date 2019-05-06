@@ -1,5 +1,4 @@
-﻿using Network_Upgrade.Properties;
-using System;
+﻿using System;
 using System.Collections;
 using System.Diagnostics;
 using System.Drawing;
@@ -7,8 +6,9 @@ using System.Media;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Network_Tweaker.Properties;
 
-namespace Network_Upgrade
+namespace Network_Tweaker
 {
     public partial class SpeedTest : Form
     {
@@ -61,11 +61,15 @@ namespace Network_Upgrade
                 RedirectStandardOutput = true,
                 CreateNoWindow = true
             });
-            Debug.Assert(process != null, nameof(process) + " != null");
-            var line = await process.StandardOutput.ReadToEndAsync().ConfigureAwait(false);
-            var match = Regex.Match(line, @"(.*?)Average = (.*?$)");
-            var mainPing = match.Groups[2].Value;
-            return mainPing;
+            if (process != null)
+            {
+                var line = await process.StandardOutput.ReadToEndAsync().ConfigureAwait(false);
+                var match = Regex.Match(line, @"(.*?)Average = (.*?$)");
+                var mainPing = match.Groups[2].Value;
+                return mainPing;
+            }
+
+            return "Error";
         }
 
         private static async Task<string> ExtraPingAsync(string extra)
@@ -79,10 +83,15 @@ namespace Network_Upgrade
                 CreateNoWindow = true
             });
             Debug.Assert(process != null, nameof(process) + " != null");
-            var line = await process.StandardOutput.ReadToEndAsync().ConfigureAwait(false);
-            var match = Regex.Match(line, @"(.*?)Average = (.*?$)");
-            var extraPing = match.Groups[2].Value;
-            return extraPing;
+            if (process != null)
+            {
+                var line = await process.StandardOutput.ReadToEndAsync().ConfigureAwait(false);
+                var match = Regex.Match(line, @"(.*?)Average = (.*?$)");
+                var extraPing = match.Groups[2].Value;
+                return extraPing;
+            }
+
+            return "Error";
         }
 
         private async void Button1_Click(object sender, EventArgs e)
@@ -132,7 +141,8 @@ namespace Network_Upgrade
                         break;
                 }
             }
-            ColumnClickEventArgs eArgs = new ColumnClickEventArgs(4);
+
+            var eArgs = new ColumnClickEventArgs(4);
             ListView1_ColumnClick(listView1, eArgs);
             listView1.FocusedItem = listView1.Items[0];
             listView1.SelectedIndexChanged += (s, a) => { button2.Enabled = true; };
@@ -161,22 +171,22 @@ namespace Network_Upgrade
         private static void ChangeMainDns(string line)
         {
             Process.Start(new ProcessStartInfo
-            {
-                FileName = "cmd",
-                Arguments = $"/c netsh interface ipv4 set dnsservers \"Ethernet\" static address={line} primary",
-                WindowStyle = ProcessWindowStyle.Hidden
-            })
+                {
+                    FileName = "cmd",
+                    Arguments = $"/c netsh interface ipv4 set dnsservers \"Ethernet\" static address={line} primary",
+                    WindowStyle = ProcessWindowStyle.Hidden
+                })
                 ?.WaitForExit();
         }
 
         private static void ChangeExtraDns(string line)
         {
             Process.Start(new ProcessStartInfo
-            {
-                FileName = "cmd",
-                Arguments = $"/c netsh interface ipv4 add dnsservers \"Ethernet\" address={line}",
-                WindowStyle = ProcessWindowStyle.Hidden
-            })
+                {
+                    FileName = "cmd",
+                    Arguments = $"/c netsh interface ipv4 add dnsservers \"Ethernet\" address={line}",
+                    WindowStyle = ProcessWindowStyle.Hidden
+                })
                 ?.WaitForExit();
         }
 
@@ -225,6 +235,12 @@ namespace Network_Upgrade
             Fulling();
         }
 
+        private void ListView1_ColumnWidthChanging(object sender, ColumnWidthChangingEventArgs e)
+        {
+            e.Cancel = true;
+            e.NewWidth = listView1.Columns[e.ColumnIndex].Width;
+        }
+
         private class ListViewColumnComparer : IComparer
         {
             public int Compare(object x, object y)
@@ -232,20 +248,14 @@ namespace Network_Upgrade
                 try
                 {
                     return string.CompareOrdinal(
-                        ((ListViewItem)x)?.SubItems[4].Text.Replace("ms", ""),
-                        ((ListViewItem)y)?.SubItems[4].Text.Replace("ms", ""));
+                        ((ListViewItem) x)?.SubItems[4].Text.Replace("ms", ""),
+                        ((ListViewItem) y)?.SubItems[4].Text.Replace("ms", ""));
                 }
                 catch
                 {
                     return 0;
                 }
             }
-        }
-
-        private void ListView1_ColumnWidthChanging(object sender, ColumnWidthChangingEventArgs e)
-        {
-            e.Cancel = true;
-            e.NewWidth = listView1.Columns[e.ColumnIndex].Width;
         }
     }
 }

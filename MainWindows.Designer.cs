@@ -1,4 +1,4 @@
-﻿namespace Network_Upgrade
+﻿namespace Network_Tweaker
 {
     partial class MainWindows
     {
@@ -70,6 +70,7 @@
             this.label14 = new System.Windows.Forms.Label();
             this.comboBox3 = new System.Windows.Forms.ComboBox();
             this.tabPage5 = new System.Windows.Forms.TabPage();
+            this.label23 = new System.Windows.Forms.Label();
             this.label31 = new System.Windows.Forms.Label();
             this.button9 = new System.Windows.Forms.Button();
             this.label30 = new System.Windows.Forms.Label();
@@ -82,6 +83,7 @@
             this.label22 = new System.Windows.Forms.Label();
             this.textBox3 = new System.Windows.Forms.TextBox();
             this.tabPage6 = new System.Windows.Forms.TabPage();
+            this.button4 = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
             this.checkBox3 = new System.Windows.Forms.CheckBox();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
@@ -89,12 +91,10 @@
             this.protocolbox = new System.Windows.Forms.CheckBox();
             this.proxybox = new System.Windows.Forms.CheckBox();
             this.label6 = new System.Windows.Forms.Label();
-            this.button4 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
             this.autoupdatebox = new System.Windows.Forms.CheckBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.webBrowser1 = new System.Windows.Forms.WebBrowser();
-            this.label23 = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
@@ -164,8 +164,8 @@
             // 
             this.pictureBox2.BackColor = System.Drawing.Color.Transparent;
             this.pictureBox2.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.pictureBox2.Image = global::Network_Upgrade.Properties.Resources.Folder_Lite;
-            this.pictureBox2.Location = new System.Drawing.Point(391, 76);
+            this.pictureBox2.Image = global::Network_Tweaker.Properties.Resources.folder_Lite;
+            this.pictureBox2.Location = new System.Drawing.Point(36, 76);
             this.pictureBox2.Name = "pictureBox2";
             this.pictureBox2.Size = new System.Drawing.Size(25, 25);
             this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -330,7 +330,7 @@
             // 
             this.pictureBox7.BackColor = System.Drawing.Color.Transparent;
             this.pictureBox7.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.pictureBox7.Image = global::Network_Upgrade.Properties.Resources.TestPing_Lite;
+            this.pictureBox7.Image = global::Network_Tweaker.Properties.Resources.graph_Lite;
             this.pictureBox7.Location = new System.Drawing.Point(39, 52);
             this.pictureBox7.Name = "pictureBox7";
             this.pictureBox7.Size = new System.Drawing.Size(25, 25);
@@ -365,7 +365,7 @@
             // 
             this.pictureBox6.BackColor = System.Drawing.Color.Transparent;
             this.pictureBox6.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.pictureBox6.Image = global::Network_Upgrade.Properties.Resources.Connections_Lite;
+            this.pictureBox6.Image = global::Network_Tweaker.Properties.Resources.network_Lite;
             this.pictureBox6.Location = new System.Drawing.Point(388, 52);
             this.pictureBox6.Name = "pictureBox6";
             this.pictureBox6.Size = new System.Drawing.Size(25, 25);
@@ -668,6 +668,16 @@
             this.tabPage5.TabIndex = 6;
             this.tabPage5.Text = "IP";
             // 
+            // label23
+            // 
+            this.label23.AutoSize = true;
+            this.label23.Font = new System.Drawing.Font("Montserrat SemiBold", 12F, System.Drawing.FontStyle.Bold);
+            this.label23.Location = new System.Drawing.Point(142, 10);
+            this.label23.Name = "label23";
+            this.label23.Size = new System.Drawing.Size(169, 22);
+            this.label23.TabIndex = 40;
+            this.label23.Text = "Информация об IP";
+            // 
             // label31
             // 
             this.label31.AutoSize = true;
@@ -786,6 +796,7 @@
             // tabPage6
             // 
             this.tabPage6.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.tabPage6.Controls.Add(this.button4);
             this.tabPage6.Controls.Add(this.label5);
             this.tabPage6.Controls.Add(this.checkBox3);
             this.tabPage6.Controls.Add(this.checkBox2);
@@ -793,7 +804,6 @@
             this.tabPage6.Controls.Add(this.protocolbox);
             this.tabPage6.Controls.Add(this.proxybox);
             this.tabPage6.Controls.Add(this.label6);
-            this.tabPage6.Controls.Add(this.button4);
             this.tabPage6.Controls.Add(this.button3);
             this.tabPage6.Controls.Add(this.autoupdatebox);
             this.tabPage6.ImageKey = "(отсутствует)";
@@ -804,6 +814,20 @@
             this.tabPage6.Text = "Настройки";
             this.tabPage6.ToolTipText = "Настройте работу программы";
             // 
+            // button4
+            // 
+            this.button4.BackColor = System.Drawing.Color.Gainsboro;
+            this.button4.FlatAppearance.BorderSize = 0;
+            this.button4.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button4.Font = new System.Drawing.Font("Verdana", 9.75F);
+            this.button4.Location = new System.Drawing.Point(3, 139);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(167, 25);
+            this.button4.TabIndex = 9;
+            this.button4.Text = "Вернуть";
+            this.button4.UseVisualStyleBackColor = false;
+            this.button4.Click += new System.EventHandler(this.Button4_Click);
+            // 
             // label5
             // 
             this.label5.Font = new System.Drawing.Font("Malgun Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -811,36 +835,51 @@
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(166, 101);
             this.label5.TabIndex = 10;
+            this.label5.Text = "Наведи мышкой на любой пункт :)";
             this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.label5.Paint += new System.Windows.Forms.PaintEventHandler(this.Label5_Paint);
             // 
             // checkBox3
             // 
-            this.checkBox3.AutoSize = true;
-            this.checkBox3.Location = new System.Drawing.Point(3, 92);
+            this.checkBox3.Appearance = System.Windows.Forms.Appearance.Button;
+            this.checkBox3.BackColor = System.Drawing.Color.Transparent;
+            this.checkBox3.FlatAppearance.BorderSize = 0;
+            this.checkBox3.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
+            this.checkBox3.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            this.checkBox3.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            this.checkBox3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.checkBox3.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.checkBox3.Location = new System.Drawing.Point(3, 87);
             this.checkBox3.Name = "checkBox3";
-            this.checkBox3.Size = new System.Drawing.Size(231, 23);
+            this.checkBox3.Size = new System.Drawing.Size(221, 26);
             this.checkBox3.TabIndex = 17;
             this.checkBox3.Text = "Увеличение размера кэша DNS";
-            this.checkBox3.UseVisualStyleBackColor = true;
+            this.checkBox3.UseVisualStyleBackColor = false;
             this.checkBox3.CheckedChanged += new System.EventHandler(this.CheckBox3_CheckedChanged);
             // 
             // checkBox2
             // 
-            this.checkBox2.AutoSize = true;
-            this.checkBox2.Location = new System.Drawing.Point(3, 69);
+            this.checkBox2.Appearance = System.Windows.Forms.Appearance.Button;
+            this.checkBox2.BackColor = System.Drawing.Color.Transparent;
+            this.checkBox2.FlatAppearance.BorderSize = 0;
+            this.checkBox2.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
+            this.checkBox2.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            this.checkBox2.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            this.checkBox2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.checkBox2.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.checkBox2.Location = new System.Drawing.Point(3, 61);
             this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(343, 23);
+            this.checkBox2.Size = new System.Drawing.Size(332, 26);
             this.checkBox2.TabIndex = 16;
             this.checkBox2.Text = "Пункт \"Разрешить/Запретить доступ в интернет\"";
-            this.checkBox2.UseVisualStyleBackColor = true;
+            this.checkBox2.UseVisualStyleBackColor = false;
             this.checkBox2.CheckedChanged += new System.EventHandler(this.CheckBox2_CheckedChanged);
             // 
             // pictureBox4
             // 
             this.pictureBox4.BackColor = System.Drawing.Color.Transparent;
             this.pictureBox4.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.pictureBox4.Image = global::Network_Upgrade.Properties.Resources.registry_lite;
+            this.pictureBox4.Image = global::Network_Tweaker.Properties.Resources.registry_lite;
             this.pictureBox4.Location = new System.Drawing.Point(271, 8);
             this.pictureBox4.Name = "pictureBox4";
             this.pictureBox4.Size = new System.Drawing.Size(25, 25);
@@ -852,24 +891,38 @@
             // 
             // protocolbox
             // 
-            this.protocolbox.AutoSize = true;
-            this.protocolbox.Location = new System.Drawing.Point(3, 115);
+            this.protocolbox.Appearance = System.Windows.Forms.Appearance.Button;
+            this.protocolbox.BackColor = System.Drawing.Color.Transparent;
+            this.protocolbox.FlatAppearance.BorderSize = 0;
+            this.protocolbox.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
+            this.protocolbox.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            this.protocolbox.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            this.protocolbox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.protocolbox.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.protocolbox.Location = new System.Drawing.Point(3, 112);
             this.protocolbox.Name = "protocolbox";
-            this.protocolbox.Size = new System.Drawing.Size(264, 23);
+            this.protocolbox.Size = new System.Drawing.Size(255, 26);
             this.protocolbox.TabIndex = 13;
             this.protocolbox.Text = "Отключить бесполезные протоколы";
-            this.protocolbox.UseVisualStyleBackColor = true;
+            this.protocolbox.UseVisualStyleBackColor = false;
             this.protocolbox.CheckedChanged += new System.EventHandler(this.Protocolbox_CheckedChanged);
             // 
             // proxybox
             // 
-            this.proxybox.AutoSize = true;
-            this.proxybox.Location = new System.Drawing.Point(3, 46);
+            this.proxybox.Appearance = System.Windows.Forms.Appearance.Button;
+            this.proxybox.BackColor = System.Drawing.Color.Transparent;
+            this.proxybox.FlatAppearance.BorderSize = 0;
+            this.proxybox.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
+            this.proxybox.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            this.proxybox.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            this.proxybox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.proxybox.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.proxybox.Location = new System.Drawing.Point(3, 37);
             this.proxybox.Name = "proxybox";
-            this.proxybox.Size = new System.Drawing.Size(160, 23);
+            this.proxybox.Size = new System.Drawing.Size(160, 26);
             this.proxybox.TabIndex = 12;
             this.proxybox.Text = "Прокси Антизапрета";
-            this.proxybox.UseVisualStyleBackColor = true;
+            this.proxybox.UseVisualStyleBackColor = false;
             this.proxybox.CheckedChanged += new System.EventHandler(this.Proxybox_CheckedChanged);
             // 
             // label6
@@ -881,20 +934,6 @@
             this.label6.Size = new System.Drawing.Size(96, 20);
             this.label6.TabIndex = 11;
             this.label6.Text = "Настройки";
-            // 
-            // button4
-            // 
-            this.button4.BackColor = System.Drawing.Color.Gainsboro;
-            this.button4.FlatAppearance.BorderSize = 0;
-            this.button4.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button4.Font = new System.Drawing.Font("Verdana", 9.75F);
-            this.button4.Location = new System.Drawing.Point(3, 140);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(167, 25);
-            this.button4.TabIndex = 9;
-            this.button4.Text = "Вернуть";
-            this.button4.UseVisualStyleBackColor = false;
-            this.button4.Click += new System.EventHandler(this.Button4_Click);
             // 
             // button3
             // 
@@ -912,13 +951,20 @@
             // 
             // autoupdatebox
             // 
-            this.autoupdatebox.AutoSize = true;
-            this.autoupdatebox.Location = new System.Drawing.Point(3, 23);
+            this.autoupdatebox.Appearance = System.Windows.Forms.Appearance.Button;
+            this.autoupdatebox.BackColor = System.Drawing.Color.Transparent;
+            this.autoupdatebox.FlatAppearance.BorderSize = 0;
+            this.autoupdatebox.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
+            this.autoupdatebox.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            this.autoupdatebox.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            this.autoupdatebox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.autoupdatebox.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.autoupdatebox.Location = new System.Drawing.Point(3, 13);
             this.autoupdatebox.Name = "autoupdatebox";
-            this.autoupdatebox.Size = new System.Drawing.Size(144, 23);
+            this.autoupdatebox.Size = new System.Drawing.Size(144, 26);
             this.autoupdatebox.TabIndex = 0;
             this.autoupdatebox.Text = "Авто Обновление";
-            this.autoupdatebox.UseVisualStyleBackColor = true;
+            this.autoupdatebox.UseVisualStyleBackColor = false;
             this.autoupdatebox.CheckedChanged += new System.EventHandler(this.Autoupdatebox_CheckedChanged);
             // 
             // webBrowser1
@@ -928,16 +974,6 @@
             this.webBrowser1.Name = "webBrowser1";
             this.webBrowser1.Size = new System.Drawing.Size(1164, 381);
             this.webBrowser1.TabIndex = 36;
-            // 
-            // label23
-            // 
-            this.label23.AutoSize = true;
-            this.label23.Font = new System.Drawing.Font("Montserrat SemiBold", 12F, System.Drawing.FontStyle.Bold);
-            this.label23.Location = new System.Drawing.Point(142, 10);
-            this.label23.Name = "label23";
-            this.label23.Size = new System.Drawing.Size(169, 22);
-            this.label23.TabIndex = 40;
-            this.label23.Text = "Информация об IP";
             // 
             // MainWindows
             // 

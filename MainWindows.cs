@@ -1,6 +1,4 @@
-﻿using Microsoft.Win32;
-using Network_Upgrade.Properties;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -11,9 +9,10 @@ using System.ServiceProcess;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using AutoUpdaterDotNET;
+using Microsoft.Win32;
+using Network_Tweaker.Properties;
 
-namespace Network_Upgrade
+namespace Network_Tweaker
 {
     /// <inheritdoc />
     public partial class MainWindows : Form
@@ -29,20 +28,12 @@ namespace Network_Upgrade
 
         private async void Form1_Load(object sender, EventArgs e)
         {
-            AutoUpdater.DownloadPath = Environment.CurrentDirectory;
-            AutoUpdater.ReportErrors = true;
-            AutoUpdater.ShowRemindLaterButton = false;
-            AutoUpdater.ShowSkipButton = false;
-            AutoUpdater.Start("http://rbsoft.org/updates/AutoUpdater.xml");
-            tabControl1.SelectedIndexChanged += (s, a) => 
-            { 
-                Width = tabControl1.SelectedTab != tabPage6 ? 597 : 680;
-            }; // 672; 237
+            tabControl1.SelectedIndexChanged += (s, a) => { Width = tabControl1.SelectedTab != tabPage6 ? 597 : 680; }; // 672; 237
             OptionsLoad();
             label4.Text +=
                 File.GetLastWriteTime(Path).ToString("dd/MM/yyyy");
             for (; Opacity < .93; Opacity += .04)
-                await Task.Delay(30).ConfigureAwait(true);
+                await Task.Delay(15).ConfigureAwait(true);
             FillComboAsync();
             comboBox1.SelectedIndexChanged += (s, a) => { button1.Enabled = true; };
             comboBox2.SelectedIndexChanged += (s, a) =>
@@ -57,18 +48,27 @@ namespace Network_Upgrade
 
             for (; Opacity < .93; Opacity += .04)
                 await Task.Delay(30).ConfigureAwait(false);
+            ChckSrvc();
+        }
+
+        private void ChckSrvc()
+        {
             var sc = new ServiceController(@"Dnscache");
             if (sc.Status == ServiceControllerStatus.Running)
                 return;
-            CmdExe(@"sc start Dnscache");
+            MainWindows.CmdExe(@"sc start Dnscache");
             Notification(@"В фонов режиме была запущена служба DNS");
         }
 
-        // ReSharper disable once MethodTooLong
         private void Button1_Click(object sender, EventArgs e)
         {
             var audio = new SoundPlayer(Resources.s);
+            ApplyHost();
             audio.Play();
+        }
+
+        private void ApplyHost()
+        {
             switch (comboBox1.SelectedIndex)
             {
                 case 0:
@@ -94,7 +94,6 @@ namespace Network_Upgrade
                 case 5:
                     UpdHosts("http://sbc.io/hosts/alternates/fakenews-gambling/hosts");
                     Notification(@"Фильтр успешно обновлен.");
-                    audio.Play();
                     break;
                 case 6:
                     UpdHosts("http://sbc.io/hosts/alternates/fakenews-porn/hosts");
@@ -238,7 +237,7 @@ namespace Network_Upgrade
                         Notification(@"Домен " + richTextBox1.Text + @" добавлен в черный список");
                     }
 
-                    CmdExe(@"ipconfig / flushdns");
+                    MainWindows.CmdExe(@"ipconfig / flushdns");
                 }
             }
         }
@@ -306,58 +305,58 @@ namespace Network_Upgrade
             switch (comboBox2.SelectedIndex)
             {
                 case 0:
-                    ChangeMainDns(textBox1.Text);
+                    MainWindows.ChangeMainDns(textBox1.Text);
                     progressBar2.Value = 50;
-                    ChangeExtraDns("");
+                    MainWindows.ChangeExtraDns("");
                     progressBar2.Value = 100;
                     Notification(@"DNS был успешно изменен");
                     break;
                 case 1:
-                    ChangeMainDns(textBox1.Text.Trim());
+                    MainWindows.ChangeMainDns(textBox1.Text.Trim());
                     progressBar2.Value = 50;
-                    ChangeExtraDns(textBox2.Text.Trim());
+                    MainWindows.ChangeExtraDns(textBox2.Text.Trim());
                     progressBar2.Value = 100;
                     Notification(@"DNS был успешно изменен");
                     break;
                 case 2:
-                    ChangeMainDns(textBox1.Text);
+                    MainWindows.ChangeMainDns(textBox1.Text);
                     progressBar2.Value = 50;
-                    ChangeExtraDns(textBox2.Text);
+                    MainWindows.ChangeExtraDns(textBox2.Text);
                     progressBar2.Value = 100;
                     Notification(@"DNS был успешно изменен");
                     break;
                 case 3:
-                    ChangeMainDns(textBox1.Text);
+                    MainWindows.ChangeMainDns(textBox1.Text);
                     progressBar2.Value = 50;
-                    ChangeExtraDns(textBox2.Text);
+                    MainWindows.ChangeExtraDns(textBox2.Text);
                     progressBar2.Value = 100;
                     Notification(@"DNS был успешно изменен");
                     break;
                 case 4:
-                    ChangeMainDns(textBox1.Text);
+                    MainWindows.ChangeMainDns(textBox1.Text);
                     progressBar2.Value = 50;
-                    ChangeExtraDns(textBox2.Text);
+                    MainWindows.ChangeExtraDns(textBox2.Text);
                     progressBar2.Value = 100;
                     Notification(@"DNS был успешно изменен");
                     break;
                 case 5:
-                    ChangeMainDns(textBox1.Text);
+                    MainWindows.ChangeMainDns(textBox1.Text);
                     progressBar2.Value = 50;
-                    ChangeExtraDns(textBox2.Text);
+                    MainWindows.ChangeExtraDns(textBox2.Text);
                     progressBar2.Value = 100;
                     Notification(@"DNS был успешно изменен");
                     break;
                 case 6:
-                    ChangeMainDns(textBox1.Text);
+                    MainWindows.ChangeMainDns(textBox1.Text);
                     progressBar2.Value = 50;
-                    ChangeExtraDns(textBox2.Text);
+                    MainWindows.ChangeExtraDns(textBox2.Text);
                     progressBar2.Value = 100;
                     Notification(@"DNS был успешно изменен");
                     break;
                 case 7:
-                    ChangeMainDns(textBox1.Text);
+                    MainWindows.ChangeMainDns(textBox1.Text);
                     progressBar2.Value = 50;
-                    ChangeExtraDns(textBox2.Text);
+                    MainWindows.ChangeExtraDns(textBox2.Text);
                     progressBar2.Value = 100;
                     Notification(@"DNS был успешно изменен");
                     break;
@@ -379,6 +378,8 @@ namespace Network_Upgrade
                     key.SetValue("AutoUpdate", "0");
                 }
             }
+
+            autoupdatebox.ForeColor = autoupdatebox.Checked ? Color.FromArgb(9, 153, 246) : SystemColors.ControlDarkDark;
         }
 
         private void Protocolbox_CheckedChanged(object sender, EventArgs e)
@@ -419,6 +420,8 @@ namespace Network_Upgrade
                     key.SetValue("Protocols", "0");
                 }
             }
+
+            protocolbox.ForeColor = protocolbox.Checked ? Color.FromArgb(9, 153, 246) : SystemColors.ControlDarkDark;
         }
 
         private void Proxybox_CheckedChanged(object sender, EventArgs e)
@@ -448,6 +451,8 @@ namespace Network_Upgrade
                     key?.SetValue("Proxy", "0");
                 }
             }
+
+            proxybox.ForeColor = proxybox.Checked ? Color.FromArgb(9, 153, 246) : SystemColors.ControlDarkDark;
         }
 
         private void PictureBox1_Click(object sender, EventArgs e)
@@ -457,45 +462,45 @@ namespace Network_Upgrade
                 switch (comboBox2.SelectedIndex)
                 {
                     case 0:
-                        Task.Run(TtlGetAsync);
-                        Task.Run(PingMainAsync);
-                        Task.Run(PingExtraAsync);
+                        Task.Run((Func<Task>) TtlGetAsync);
+                        Task.Run((Func<Task>) PingMainAsync);
+                        Task.Run((Func<Task>) PingExtraAsync);
                         break;
                     case 1:
 
-                        Task.Run(TtlGetAsync);
-                        Task.Run(PingMainAsync);
-                        Task.Run(PingExtraAsync);
+                        Task.Run((Func<Task>) TtlGetAsync);
+                        Task.Run((Func<Task>) PingMainAsync);
+                        Task.Run((Func<Task>) PingExtraAsync);
                         break;
                     case 2:
-                        Task.Run(TtlGetAsync);
-                        Task.Run(PingMainAsync);
-                        Task.Run(PingExtraAsync);
+                        Task.Run((Func<Task>) TtlGetAsync);
+                        Task.Run((Func<Task>) PingMainAsync);
+                        Task.Run((Func<Task>) PingExtraAsync);
                         break;
                     case 3:
-                        Task.Run(TtlGetAsync);
-                        Task.Run(PingMainAsync);
-                        Task.Run(PingExtraAsync);
+                        Task.Run((Func<Task>) TtlGetAsync);
+                        Task.Run((Func<Task>) PingMainAsync);
+                        Task.Run((Func<Task>) PingExtraAsync);
                         break;
                     case 4:
-                        Task.Run(TtlGetAsync);
-                        Task.Run(PingMainAsync);
-                        Task.Run(PingExtraAsync);
+                        Task.Run((Func<Task>) TtlGetAsync);
+                        Task.Run((Func<Task>) PingMainAsync);
+                        Task.Run((Func<Task>) PingExtraAsync);
                         break;
                     case 5:
-                        Task.Run(TtlGetAsync);
-                        Task.Run(PingMainAsync);
-                        Task.Run(PingExtraAsync);
+                        Task.Run((Func<Task>) TtlGetAsync);
+                        Task.Run((Func<Task>) PingMainAsync);
+                        Task.Run((Func<Task>) PingExtraAsync);
                         break;
                     case 6:
-                        Task.Run(TtlGetAsync);
-                        Task.Run(PingMainAsync);
-                        Task.Run(PingExtraAsync);
+                        Task.Run((Func<Task>) TtlGetAsync);
+                        Task.Run((Func<Task>) PingMainAsync);
+                        Task.Run((Func<Task>) PingExtraAsync);
                         break;
                     case 7:
-                        Task.Run(TtlGetAsync);
-                        Task.Run(PingMainAsync);
-                        Task.Run(PingExtraAsync);
+                        Task.Run((Func<Task>) TtlGetAsync);
+                        Task.Run((Func<Task>) PingMainAsync);
+                        Task.Run((Func<Task>) PingExtraAsync);
                         break;
                     default:
                         textBox1.Text = @"-";
@@ -506,14 +511,14 @@ namespace Network_Upgrade
             else if (textBox1.Text == "" && textBox2.Text != "")
             {
                 label10.Text = "";
-                Task.Run(PingExtraAsync);
-                Task.Run(TtlGetAsync);
+                Task.Run((Func<Task>) PingExtraAsync);
+                Task.Run((Func<Task>) TtlGetAsync);
             }
             else if (textBox1.Text != "" && textBox2.Text == "")
             {
                 label11.Text = "";
-                Task.Run(PingMainAsync);
-                Task.Run(TtlGetAsync);
+                Task.Run((Func<Task>) PingMainAsync);
+                Task.Run((Func<Task>) TtlGetAsync);
             }
         }
 
@@ -586,6 +591,8 @@ namespace Network_Upgrade
                     key?.SetValue("Shell", "0");
                 }
             }
+
+            checkBox2.ForeColor = checkBox2.Checked ? Color.FromArgb(9, 153, 246) : SystemColors.ControlDarkDark;
         }
 
         private void CheckBox3_CheckedChanged(object sender, EventArgs e)
@@ -627,6 +634,8 @@ namespace Network_Upgrade
                     Registry.CurrentUser.CreateSubKey(@"Software\Upgrade Your Network")?.SetValue("Optimize DnsCache", "0");
                 }
             }
+
+            checkBox3.ForeColor = checkBox3.Checked ? Color.FromArgb(9, 153, 246) : SystemColors.ControlDarkDark;
         }
 
         private void TextBox1_TextChanged(object sender, EventArgs e)
@@ -663,18 +672,17 @@ namespace Network_Upgrade
 
         private async void ComboBox3_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (comboBox3 != null)
-            {
-                await GetWiFiInfoAsync(comboBox3.SelectedText).ConfigureAwait(false);
-                label14.Enabled = true;
-                label18.Enabled = true;
-                label20.Enabled = true;
-                label19.Enabled = true;
-                label17.Enabled = true;
-                label7.Enabled = true;
-                button5.Enabled = true;
-                button8.Enabled = true;
-            }
+            if (comboBox3 == null)
+                return;
+            await GetWiFiInfoAsync(comboBox3.SelectedText).ConfigureAwait(false);
+            label14.Enabled = true;
+            label18.Enabled = true;
+            label20.Enabled = true;
+            label19.Enabled = true;
+            label17.Enabled = true;
+            label7.Enabled = true;
+            button5.Enabled = true;
+            button8.Enabled = true;
         }
 
         private void Button8_Click(object sender, EventArgs e)
@@ -724,6 +732,7 @@ namespace Network_Upgrade
                 textBox3.SelectionStart = textBox3.Text.Length;
                 button9.Enabled = false;
             }
+
             button9.Enabled = true;
         }
 
