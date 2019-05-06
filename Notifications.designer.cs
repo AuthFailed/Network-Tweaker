@@ -37,7 +37,7 @@
             // 
             // label1
             // 
-            this.label1.Font = new System.Drawing.Font("Consolas", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label1.Font = new System.Drawing.Font("Gilroy", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.label1.Location = new System.Drawing.Point(68, 10);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(120, 23);
@@ -46,10 +46,10 @@
             // 
             // label2
             // 
-            this.label2.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label2.Location = new System.Drawing.Point(65, 33);
+            this.label2.Font = new System.Drawing.Font("Gilroy", 12F);
+            this.label2.Location = new System.Drawing.Point(68, 33);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(290, 45);
+            this.label2.Size = new System.Drawing.Size(290, 38);
             this.label2.TabIndex = 1;
             // 
             // pictureBox1
@@ -62,13 +62,13 @@
             this.pictureBox1.TabIndex = 2;
             this.pictureBox1.TabStop = false;
             // 
-            // Form2
+            // Notifications
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoValidate = System.Windows.Forms.AutoValidate.EnablePreventFocusChange;
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(151)))), ((int)(((byte)(230)))));
-            this.ClientSize = new System.Drawing.Size(367, 76);
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(3)))), ((int)(((byte)(169)))), ((int)(((byte)(244)))));
+            this.ClientSize = new System.Drawing.Size(366, 72);
             this.ControlBox = false;
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.label2);
@@ -78,7 +78,7 @@
             this.Location = new System.Drawing.Point(1551, 976);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "Form2";
+            this.Name = "Notifications";
             this.Opacity = 0D;
             this.ShowIcon = false;
             this.ShowInTaskbar = false;

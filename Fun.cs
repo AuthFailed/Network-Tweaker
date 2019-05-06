@@ -1,23 +1,24 @@
-﻿using Microsoft.Win32;
-using Network_Upgrade.Properties;
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Microsoft.Win32;
+using Network_Upgrade.Properties;
 
 namespace Network_Upgrade
 {
     public partial class MainWindows
     {
-        void OptionsLoad()
+        private void OptionsLoad()
         {
-            using (RegistryKey key =
+            using (var key =
                 Registry.CurrentUser.CreateSubKey(@"Software\Microsoft\Windows\CurrentVersion\Internet Settings", true))
             {
                 if (key != null)
@@ -25,7 +26,7 @@ namespace Network_Upgrade
                                        @"https://antizapret.prostovpn.org/proxy.pac";
             }
 
-            using (RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\Upgrade Your Network", false))
+            using (var key = Registry.CurrentUser.OpenSubKey(@"Software\Upgrade Your Network", false))
             {
                 autoupdatebox.Checked = key?.GetValue("AutoUpdate")?.ToString() == "1";
                 protocolbox.Checked = key?.GetValue("Protocols")?.ToString() == "1";
@@ -34,7 +35,7 @@ namespace Network_Upgrade
             }
         }
 
-        void FuncLoad()
+        private void FuncLoad()
         {
             button1.MouseEnter += (s, e) => { button1.BackColor = Color.LightGray; };
             button2.MouseEnter += (s, e) => { button2.BackColor = Color.LightGray; };
@@ -46,6 +47,15 @@ namespace Network_Upgrade
             button3.MouseLeave += (s, e) => { button3.BackColor = Color.Gainsboro; };
             button4.MouseLeave += (s, e) => { button4.BackColor = Color.Gainsboro; };
             button6.MouseLeave += (s, e) => { button6.BackColor = Color.Gainsboro; };
+            label31.MouseEnter += (s, e) => { label31.BoldText(); };
+            label31.MouseLeave += (s, e) => { label31.MainText(); };
+            label31.Click += async (s, e) =>
+            {
+                var httpClient = new HttpClient();
+                var ip = await httpClient.GetStringAsync("https://api.ipify.org/?format=json");
+                var regexIp = Regex.Match(ip, "\"ip\":\"(.*?)\"");
+                textBox3.Text = regexIp.Groups[1].Value;
+            };
             pictureBox1.MouseEnter += (s, e) => { pictureBox1.Image = Resources.AnimatedRefresh; };
             pictureBox1.MouseLeave += (s, e) => { pictureBox1.Image = Resources.RefreshLite; };
             pictureBox2.MouseEnter += (s, e) => { pictureBox2.Image = Resources.Folder_Gray; };
@@ -59,7 +69,7 @@ namespace Network_Upgrade
             pictureBox7.MouseLeave += (s, e) => { pictureBox7.Image = Resources.TestPing_Lite; };
             pictureBox7.MouseClick += (s, e) =>
             {
-                SpeedTest form = new SpeedTest();
+                var form = new SpeedTest();
                 form.ShowDialog();
             };
             autoupdatebox.MouseEnter += (s, e) => { label5.Text = @"Включает автоматическое обновление фильтра при каждой загрузке системы"; };
@@ -71,7 +81,9 @@ namespace Network_Upgrade
             {
                 label5.Text = @"Устанавливает стандартные значения для фильтра, которые поставляются вместе с Windows";
             };
+            button3.MouseLeave += (sender, e) => { label5.Text = @"Наведи мышкой на любой пункт :)"; };
             button4.MouseEnter += (sender, e) => { label5.Text = @"Восстанавливает прошлую версию фильтра, если таковая существует"; };
+            button4.MouseLeave += (sender, e) => { label5.Text = @"Наведи мышкой на любой пункт :)"; };
             autoupdatebox.MouseLeave += (s, e) => { label5.Text = @"Наведи мышкой на любой пункт :)"; };
             proxybox.MouseLeave += (s, e) => { label5.Text = @"Наведи мышкой на любой пункт :)"; };
             autoupdatebox.MouseLeave += (s, e) => { label5.Text = @"Наведи мышкой на любой пункт :)"; };
@@ -81,7 +93,7 @@ namespace Network_Upgrade
             button4.MouseLeave += (sender, e) => { label5.Text = @"Наведи мышкой на любой пункт :)"; };
         }
 
-        static void CmdExe(string line)
+        private static void CmdExe(string line)
         {
             Process.Start(new ProcessStartInfo
             {
@@ -92,9 +104,9 @@ namespace Network_Upgrade
                 ?.WaitForExit();
         }
 
-        void Notification(string line)
+        private void Notification(string line)
         {
-            Notifications cf = new Notifications();
+            var cf = new Notifications();
             {
                 cf.Show();
                 cf.label2.Text = line;
@@ -102,22 +114,22 @@ namespace Network_Upgrade
             Activate();
         }
 
-        void TxtRdNl()
+        private void TxtRdNl()
         {
             textBox1.ReadOnly = true;
             textBox2.ReadOnly = true;
         }
 
-        void UpdHosts(string line)
+        private void UpdHosts(string line)
         {
             if (File.Exists(Backup))
                 File.Delete(Backup);
             if (File.Exists(Path))
                 File.Copy(Path, Backup);
-            Uri filer = new Uri(line);
+            var filer = new Uri(line);
             try
             {
-                using (WebClient wc = new WebClient())
+                using (var wc = new WebClient())
                 {
                     wc.DownloadFileCompleted += Web_DownloadFileCompleted;
                     wc.DownloadFileAsync(filer, Path);
@@ -134,33 +146,33 @@ namespace Network_Upgrade
             }
         }
 
-        void Web_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
+        private void Web_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
         {
             label4.Text = @"Последнее обновление: " + File.GetLastWriteTime(Path).ToString("dd/MM/yyyy");
         }
 
-        void TabControl1_DrawItem(object sender, DrawItemEventArgs e)
+        private void TabControl1_DrawItem(object sender, DrawItemEventArgs e)
         {
-            TabControl ctlTab = (TabControl)sender;
+            var ctlTab = (TabControl)sender;
 
-            Graphics g = e.Graphics;
+            var g = e.Graphics;
 
-            string sText = ctlTab.TabPages[e.Index].Text;
-            SizeF sizeText = g.MeasureString(sText, ctlTab.Font);
-            int iX = e.Bounds.Left + 6;
-            float iY = e.Bounds.Top + (e.Bounds.Height - sizeText.Height) / 2;
+            var sText = ctlTab.TabPages[e.Index].Text;
+            var sizeText = g.MeasureString(sText, ctlTab.Font);
+            var iX = e.Bounds.Left + 6;
+            var iY = e.Bounds.Top + (e.Bounds.Height - sizeText.Height) / 2;
             g.DrawString(sText, ctlTab.Font, Brushes.Black, iX, iY);
             e.Graphics.SetClip(e.Bounds);
-            string text = tabControl1.TabPages[e.Index].Text;
-            SizeF sz = e.Graphics.MeasureString(text, e.Font);
+            var text = tabControl1.TabPages[e.Index].Text;
+            var sz = e.Graphics.MeasureString(text, e.Font);
 
-            bool bSelected = (e.State & DrawItemState.Selected) == DrawItemState.Selected;
-            using (SolidBrush b = new SolidBrush(bSelected ? SystemColors.Highlight : SystemColors.Control))
+            var bSelected = (e.State & DrawItemState.Selected) == DrawItemState.Selected;
+            using (var b = new SolidBrush(bSelected ? SystemColors.Highlight : SystemColors.Control))
             {
                 e.Graphics.FillRectangle(b, e.Bounds);
             }
 
-            using (SolidBrush b = new SolidBrush(bSelected ? SystemColors.HighlightText : SystemColors.ControlText))
+            using (var b = new SolidBrush(bSelected ? SystemColors.HighlightText : SystemColors.ControlText))
             {
                 e.Graphics.DrawString(text, e.Font, b, e.Bounds.X + 2, e.Bounds.Y + (e.Bounds.Height - sz.Height) / 2);
             }
@@ -171,7 +183,7 @@ namespace Network_Upgrade
             e.Graphics.ResetClip();
         }
 
-        void AUpd()
+        private void AUpd()
         {
             if (autoupdatebox.Checked && !File.Exists(@"C:\Windows\hosts.exe"))
                 try
@@ -197,13 +209,13 @@ namespace Network_Upgrade
                 }
         }
 
-        static void AUpdTrue()
+        private static void AUpdTrue()
         {
-            string path = Environment.GetEnvironmentVariable("SYSTEMROOT");
-            Uri uri = new Uri("https://github.com/AuthFailed/Update-Your-Hosts/raw/master/hosts.exe");
+            var path = Environment.GetEnvironmentVariable("SYSTEMROOT");
+            var uri = new Uri("https://github.com/AuthFailed/Update-Your-Hosts/raw/master/hosts.exe");
             try
             {
-                using (WebClient wc = new WebClient())
+                using (var wc = new WebClient())
                 {
                     wc.DownloadFileAsync(uri, path + @"\hosts.exe");
                 }
@@ -215,19 +227,19 @@ namespace Network_Upgrade
                 Clipboard.SetText(ex.ToString());
             }
 
-            using (RegistryKey key =
+            using (var key =
                 Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Run", true))
             {
                 key?.SetValue("Hosts Update", $@"{path}\hosts.exe");
             }
         }
 
-        static void AUpdFalse()
+        private static void AUpdFalse()
         {
-            string path = Environment.GetEnvironmentVariable("SYSTEMROOT");
+            var path = Environment.GetEnvironmentVariable("SYSTEMROOT");
             if (File.Exists(path + @"\hosts.exe"))
                 File.Delete(path + @"\hosts.exe");
-            using (RegistryKey key =
+            using (var key =
                 Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Run", true))
             {
                 if (key?.GetValue("Hosts Update") != null)
@@ -235,7 +247,7 @@ namespace Network_Upgrade
             }
         }
 
-        static void ChangeMainDns(string line)
+        private static void ChangeMainDns(string line)
         {
             Process.Start(new ProcessStartInfo
             {
@@ -246,7 +258,7 @@ namespace Network_Upgrade
                 ?.WaitForExit();
         }
 
-        static void ChangeExtraDns(string line)
+        private static void ChangeExtraDns(string line)
         {
             Process.Start(new ProcessStartInfo
             {
@@ -257,9 +269,9 @@ namespace Network_Upgrade
                 ?.WaitForExit();
         }
 
-        async Task PingMainAsync()
+        private async Task PingMainAsync()
         {
-            Process process = Process.Start(new ProcessStartInfo
+            var process = Process.Start(new ProcessStartInfo
             {
                 FileName = "cmd",
                 Arguments = $"/c chcp 65001 & ping {textBox1.Text} -n 3",
@@ -275,14 +287,14 @@ namespace Network_Upgrade
             await Task.Delay(700).ConfigureAwait(false);
             if (process?.StandardOutput == null)
                 return;
-            string line = await process.StandardOutput.ReadToEndAsync().ConfigureAwait(false);
-            Match match = Regex.Match(line, @"(.*?)Average = (.*?$)");
+            var line = await process.StandardOutput.ReadToEndAsync().ConfigureAwait(false);
+            var match = Regex.Match(line, @"(.*?)Average = (.*?$)");
             label10.Text = match.Groups[2].Value;
         }
 
-        async Task PingExtraAsync()
+        private async Task PingExtraAsync()
         {
-            Process process = Process.Start(new ProcessStartInfo
+            var process = Process.Start(new ProcessStartInfo
             {
                 FileName = "cmd",
                 Arguments = $"/c chcp 65001 & ping {textBox2.Text} -n 3",
@@ -298,56 +310,54 @@ namespace Network_Upgrade
             await Task.Delay(700).ConfigureAwait(false);
             if (process?.StandardOutput == null)
                 return;
-            string line = await process.StandardOutput.ReadToEndAsync().ConfigureAwait(false);
-            Match match = Regex.Match(line, @"(.*?)Average = (.*?$)");
+            var line = await process.StandardOutput.ReadToEndAsync().ConfigureAwait(false);
+            var match = Regex.Match(line, @"(.*?)Average = (.*?$)");
             label11.Text = match.Groups[2].Value;
         }
 
-        void FillComboAsync()
+        private void FillComboAsync()
         {
-            if (tabControl1.SelectedIndex == 3)
+            if (tabControl1.SelectedIndex != 3)
+                return;
+            Process.Start(new ProcessStartInfo
             {
-                Process.Start(new ProcessStartInfo
-                {
-                    FileName = "cmd",
-                    Arguments = "/c sc start wlansvc",
-                    WindowStyle = ProcessWindowStyle.Hidden
-                });
-                Process process = Process.Start(new ProcessStartInfo
-                {
-                    FileName = "cmd",
-                    Arguments = "/c chcp 65001 & netsh wlan show profiles",
-                    UseShellExecute = false,
-                    CreateNoWindow = true,
-                    RedirectStandardOutput = true,
-                    StandardOutputEncoding = Encoding.UTF8
-                });
-                if (process?.StandardOutput != null)
-                {
-                    var wifiInfo = process.StandardOutput.ReadToEnd();
-                    if (wifiInfo.Contains("There is no wireless interface"))
-                    {
-                        MessageBox.Show(@"В системе нет модуля Wi-Fi
+                FileName = "cmd",
+                Arguments = "/c sc start wlansvc",
+                WindowStyle = ProcessWindowStyle.Hidden
+            });
+            var process = Process.Start(new ProcessStartInfo
+            {
+                FileName = "cmd",
+                Arguments = "/c chcp 65001 & netsh wlan show profiles",
+                UseShellExecute = false,
+                CreateNoWindow = true,
+                RedirectStandardOutput = true,
+                StandardOutputEncoding = Encoding.UTF8
+            });
+            if (process?.StandardOutput == null)
+                return;
+            var wifiInfo = process.StandardOutput.ReadToEnd();
+            if (wifiInfo.Contains("There is no wireless interface"))
+            {
+                MessageBox.Show(@"В системе нет модуля Wi-Fi
 Данная вкладка вам недоступна");
-                    }
-                    else
-                    {
-                        comboBox3.Enabled = true;
-                        Regex regex = new Regex(@"(.*?)All User Profile : (.*?$)", RegexOptions.Multiline);
-                        MatchCollection mc = regex.Matches(wifiInfo);
-                        if (mc.Count < 1)
-                            MessageBox.Show(@"Не удалось заполнить массив или нет сохраненных сетей");
-                        else
-                            foreach (Match match in mc)
-                                comboBox3.Items.Add(match.Groups[3].Value);
-                    }
-                }
+            }
+            else
+            {
+                comboBox3.Enabled = true;
+                var regex = new Regex(@"(.*?)All User Profile : (.*?$)", RegexOptions.Multiline);
+                var mc = regex.Matches(wifiInfo);
+                if (mc.Count < 1)
+                    MessageBox.Show(@"Не удалось заполнить массив или нет сохраненных сетей");
+                else
+                    foreach (Match match in mc)
+                        comboBox3.Items.Add(match.Groups[3].Value);
             }
         }
 
-        async Task TtlGetAsync()
+        private async Task TtlGetAsync()
         {
-            Process process = Process.Start(new ProcessStartInfo
+            var process = Process.Start(new ProcessStartInfo
             {
                 FileName = "cmd",
                 Arguments = $"/c chcp 65001 & ping {textBox1.Text} -n 1",
@@ -362,9 +372,9 @@ namespace Network_Upgrade
             label15.Text = match.Groups[2].Value;
         }
 
-        async Task GetWiFiInfoAsync(string line)
+        private async Task GetWiFiInfoAsync(string line)
         {
-            Process process = Process.Start(new ProcessStartInfo
+            var process = Process.Start(new ProcessStartInfo
             {
                 FileName = "cmd",
                 Arguments = $"/c chcp 65001 & netsh wlan show profile \"{line}\" key=clear",
@@ -382,6 +392,41 @@ namespace Network_Upgrade
                 match = Regex.Match(wifiInfo, @"(.*?)Key Content(.*?): (.*?$)");
                 label19.Text = match.Groups[3].Value;
             }
+        }
+
+        private async Task GetIpInfoAsync()
+        {
+            var hc = new HttpClient();
+            var line = await hc.GetStringAsync($"http://api.sypexgeo.net/json/{textBox3.Text}");
+            var link = Regex.Match(line, "\"lat\":(.*?),\"lon\":(.*?),", RegexOptions.Multiline);
+            var latitude = link.Groups[1].ToString();
+            var longitude = link.Groups[2].ToString();
+            linkLabel1.Click -= (s, e) => { Process.Start($"https://www.google.com/maps/search/?api=1&query={latitude},{longitude}"); };
+            void Action()
+            {
+                var match = Regex.Match(line,
+                    "\"city\":(.*?)\"name_ru\":\"(.*?)\",(.*?)\"region\"(.*?)\"name_ru\":\"(.*?)\",(.*?)\"country\"(.*?)\"name_ru\":\"(.*?)\",",
+                    RegexOptions.Multiline);
+                label26.Text = match.Groups[8].ToString();
+                label27.Text = match.Groups[5].ToString();
+                label28.Text = match.Groups[2].ToString();
+            }
+
+            if (!line.Contains("invalid"))
+            {
+                if (InvokeRequired)
+                    Invoke((Action)Action);
+                else
+                    Action();
+            }
+            else
+            {
+                MessageBox.Show(@"Загугли, как выглядит IP");
+            }
+
+            linkLabel1.Enabled = true;
+            label30.Visible = false;
+            linkLabel1.Click += (s, e) => { Process.Start($"https://www.google.com/maps/search/?api=1&query={latitude},{longitude}"); };
         }
     }
 }

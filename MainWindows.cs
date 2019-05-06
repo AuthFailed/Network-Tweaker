@@ -11,6 +11,7 @@ using System.ServiceProcess;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using AutoUpdaterDotNET;
 
 namespace Network_Upgrade
 {
@@ -22,12 +23,24 @@ namespace Network_Upgrade
             InitializeComponent();
         }
 
-        static string Backup { get; } = @"C:\\Windows\System32\drivers\etc\hosts_bak";
+        private static string Backup { get; } = @"C:\\Windows\System32\drivers\etc\hosts_bak";
 
-        string Path { get; } = @"C:\Windows\System32\drivers\etc\hosts";
+        private string Path { get; } = @"C:\Windows\System32\drivers\etc\hosts";
 
-        async void Form1_Load(object sender, EventArgs e)
+        private async void Form1_Load(object sender, EventArgs e)
         {
+            AutoUpdater.DownloadPath = Environment.CurrentDirectory;
+            AutoUpdater.ReportErrors = true;
+            AutoUpdater.ShowRemindLaterButton = false;
+            AutoUpdater.ShowSkipButton = false;
+            AutoUpdater.Start("http://rbsoft.org/updates/AutoUpdater.xml");
+            tabControl1.SelectedIndexChanged += (s, a) => 
+            { 
+                Width = tabControl1.SelectedTab != tabPage6 ? 597 : 680;
+            }; // 672; 237
+            OptionsLoad();
+            label4.Text +=
+                File.GetLastWriteTime(Path).ToString("dd/MM/yyyy");
             for (; Opacity < .93; Opacity += .04)
                 await Task.Delay(30).ConfigureAwait(true);
             FillComboAsync();
@@ -41,13 +54,10 @@ namespace Network_Upgrade
             };
             button6.Enabled = false;
             FuncLoad();
-            tabControl1.SelectedIndexChanged += (s, a) => { Width = tabControl1.SelectedTab != tabPage6 ? 597 : 680; }; // 672; 237
-            OptionsLoad();
-            label4.Text +=
-                File.GetLastWriteTime(Path).ToString("dd/MM/yyyy");
+
             for (; Opacity < .93; Opacity += .04)
                 await Task.Delay(30).ConfigureAwait(false);
-            ServiceController sc = new ServiceController(@"Dnscache");
+            var sc = new ServiceController(@"Dnscache");
             if (sc.Status == ServiceControllerStatus.Running)
                 return;
             CmdExe(@"sc start Dnscache");
@@ -55,9 +65,9 @@ namespace Network_Upgrade
         }
 
         // ReSharper disable once MethodTooLong
-        void Button1_Click(object sender, EventArgs e)
+        private void Button1_Click(object sender, EventArgs e)
         {
-            SoundPlayer audio = new SoundPlayer(Resources.s);
+            var audio = new SoundPlayer(Resources.s);
             audio.Play();
             switch (comboBox1.SelectedIndex)
             {
@@ -132,7 +142,7 @@ namespace Network_Upgrade
             }
         }
 
-        void ComboBox2_SelectedIndexChanged(object sender, EventArgs e)
+        private void ComboBox2_SelectedIndexChanged(object sender, EventArgs e)
         {
             switch (comboBox2.SelectedIndex)
             {
@@ -197,9 +207,9 @@ namespace Network_Upgrade
             }
         }
 
-        void Button2_Click(object sender, EventArgs e)
+        private void Button2_Click(object sender, EventArgs e)
         {
-            SoundPlayer audio = new SoundPlayer(Resources.s);
+            var audio = new SoundPlayer(Resources.s);
             audio.Play();
             if (string.IsNullOrWhiteSpace(richTextBox1.Text))
             {
@@ -207,14 +217,14 @@ namespace Network_Upgrade
             }
             else
             {
-                string[] array = File.ReadAllLines(Path);
+                var array = File.ReadAllLines(Path);
                 if (!richTextBox1.Text.Contains("."))
                 {
                     MessageBox.Show(@"Домен должен быть вида сайт.зона", @"Внимание!");
                 }
                 else
                 {
-                    int t = 0;
+                    var t = 0;
                     if (array.Any(ar => ar.Equals(richTextBox1.Text)))
                     {
                         MessageBox.Show(@"Данный домен уже есть в фильтре", @"Внимание!");
@@ -222,7 +232,7 @@ namespace Network_Upgrade
                     }
 
                     if (t >= 1) return;
-                    using (StreamWriter sw = new StreamWriter(Path, true))
+                    using (var sw = new StreamWriter(Path, true))
                     {
                         sw.WriteLine("0.0.0.0 " + richTextBox1.Text);
                         Notification(@"Домен " + richTextBox1.Text + @" добавлен в черный список");
@@ -233,30 +243,30 @@ namespace Network_Upgrade
             }
         }
 
-        void Button3_Click(object sender, EventArgs e)
+        private void Button3_Click(object sender, EventArgs e)
         {
-            SoundPlayer audio = new SoundPlayer(Resources.s);
+            var audio = new SoundPlayer(Resources.s);
             audio.Play();
-            Uri uri = new Uri("https://raw.githubusercontent.com/AuthFailed/Update-Your-Hosts/master/hosts");
-            using (WebClient wc = new WebClient())
+            var uri = new Uri("https://raw.githubusercontent.com/AuthFailed/Update-Your-Hosts/master/hosts");
+            using (var wc = new WebClient())
             {
                 wc.DownloadFileAsync(uri, Path);
             }
 
             Notification(@"Восстановлен стандартный файл hosts");
             Process.Start(new ProcessStartInfo
-            {
-                FileName = "cmd",
-                Arguments = @"/c ipconfig /flushdns",
-                WindowStyle = ProcessWindowStyle.Hidden
-            })
+                {
+                    FileName = "cmd",
+                    Arguments = @"/c ipconfig /flushdns",
+                    WindowStyle = ProcessWindowStyle.Hidden
+                })
                 ?.WaitForExit();
             label4.Text += File.GetLastWriteTime(Path).ToString("dd/MM/yyyy");
         }
 
-        void Button4_Click(object sender, EventArgs e)
+        private void Button4_Click(object sender, EventArgs e)
         {
-            SoundPlayer audio = new SoundPlayer(Resources.s);
+            var audio = new SoundPlayer(Resources.s);
             audio.Play();
             if (File.Exists(Backup))
             {
@@ -271,7 +281,7 @@ namespace Network_Upgrade
             }
         }
 
-        void CheckBox1_CheckedChanged(object sender, EventArgs e)
+        private void CheckBox1_CheckedChanged(object sender, EventArgs e)
         {
             if (checkBox1.Checked)
             {
@@ -288,9 +298,9 @@ namespace Network_Upgrade
             }
         }
 
-        void Button6_Click(object sender, EventArgs e)
+        private void Button6_Click(object sender, EventArgs e)
         {
-            SoundPlayer audio = new SoundPlayer(Resources.s);
+            var audio = new SoundPlayer(Resources.s);
             audio.Play();
             progressBar2.Value = 0;
             switch (comboBox2.SelectedIndex)
@@ -354,9 +364,9 @@ namespace Network_Upgrade
             }
         }
 
-        void Autoupdatebox_CheckedChanged(object sender, EventArgs e)
+        private void Autoupdatebox_CheckedChanged(object sender, EventArgs e)
         {
-            using (RegistryKey key = Registry.CurrentUser.CreateSubKey(@"Software\Upgrade Your Network", true))
+            using (var key = Registry.CurrentUser.CreateSubKey(@"Software\Upgrade Your Network", true))
             {
                 if (autoupdatebox.Checked)
                 {
@@ -371,53 +381,53 @@ namespace Network_Upgrade
             }
         }
 
-        void Protocolbox_CheckedChanged(object sender, EventArgs e)
+        private void Protocolbox_CheckedChanged(object sender, EventArgs e)
         {
-            using (RegistryKey key = Registry.CurrentUser.CreateSubKey(@"Software\Upgrade Your Network", true))
+            using (var key = Registry.CurrentUser.CreateSubKey(@"Software\Upgrade Your Network", true))
             {
                 if (protocolbox.Checked)
                 {
                     Process.Start(new ProcessStartInfo
-                    {
-                        FileName = "cmd",
-                        Arguments = "/c netsh interface teredo set state disabled & " +
+                        {
+                            FileName = "cmd",
+                            Arguments = "/c netsh interface teredo set state disabled & " +
                                         "netsh interface isatap set state disabled & " +
                                         "netsh int ipv6 isatap set state disabled &" +
                                         "netsh int ipv6 6to4 set state disabled &" +
                                         "netsh interface IPV6 set global randomizeidentifier=disabled &" +
                                         "netsh interface IPV6 set privacy state=disable",
-                        WindowStyle = ProcessWindowStyle.Hidden
-                    })
+                            WindowStyle = ProcessWindowStyle.Hidden
+                        })
                         ?.WaitForExit();
                     key.SetValue("Protocols", "1");
                 }
                 else
                 {
                     Process.Start(new ProcessStartInfo
-                    {
-                        FileName = "cmd",
-                        Arguments =
+                        {
+                            FileName = "cmd",
+                            Arguments =
                                 "/c netsh interface teredo set state type=default servername=default refreshinterval=default clientport=default & " +
                                 "netsh interface isatap set state enabled & " +
                                 "netsh int ipv6 isatap set state enabled &" +
                                 "netsh int ipv6 6to4 set state enabled &" +
                                 "netsh interface IPV6 set global randomizeidentifier=enabled &" +
                                 "netsh interface IPV6 set privacy state=enabled",
-                        WindowStyle = ProcessWindowStyle.Hidden
-                    })
+                            WindowStyle = ProcessWindowStyle.Hidden
+                        })
                         ?.WaitForExit();
                     key.SetValue("Protocols", "0");
                 }
             }
         }
 
-        void Proxybox_CheckedChanged(object sender, EventArgs e)
+        private void Proxybox_CheckedChanged(object sender, EventArgs e)
         {
-            using (RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\Upgrade Your Network", true))
+            using (var key = Registry.CurrentUser.OpenSubKey(@"Software\Upgrade Your Network", true))
             {
                 if (proxybox.Checked)
                 {
-                    using (RegistryKey settings =
+                    using (var settings =
                         Registry.CurrentUser.CreateSubKey(
                             @"Software\Microsoft\Windows\CurrentVersion\Internet Settings"))
                     {
@@ -428,7 +438,7 @@ namespace Network_Upgrade
                 }
                 else
                 {
-                    using (RegistryKey settings =
+                    using (var settings =
                         Registry.CurrentUser.CreateSubKey(
                             @"Software\Microsoft\Windows\CurrentVersion\Internet Settings"))
                     {
@@ -440,7 +450,7 @@ namespace Network_Upgrade
             }
         }
 
-        void PictureBox1_Click(object sender, EventArgs e)
+        private void PictureBox1_Click(object sender, EventArgs e)
         {
             if ((textBox1.Text != "") & (textBox2.Text != ""))
             {
@@ -509,7 +519,7 @@ namespace Network_Upgrade
 
         // ReSharper disable once MissingSuppressionJustification
 
-        void PictureBox2_Click(object sender, EventArgs e)
+        private void PictureBox2_Click(object sender, EventArgs e)
         {
             Process.Start(new ProcessStartInfo
             {
@@ -518,16 +528,16 @@ namespace Network_Upgrade
             });
         }
 
-        void PictureBox4_Click(object sender, EventArgs e)
+        private void PictureBox4_Click(object sender, EventArgs e)
         {
-            foreach (Process process in Process.GetProcessesByName("regedit")) process.Kill();
-            string path = @"HKEY_CURRENT_USER\Software\Upgrade Your Network";
+            foreach (var process in Process.GetProcessesByName("regedit")) process.Kill();
+            const string path = @"HKEY_CURRENT_USER\Software\Upgrade Your Network";
             Registry.CurrentUser.CreateSubKey(@"Software\Microsoft\Windows\CurrentVersion\Applets\Regedit")
                 ?.SetValue("LastKey", path);
             Process.Start("regedit");
         }
 
-        void CheckBox2_CheckedChanged(object sender, EventArgs e)
+        private void CheckBox2_CheckedChanged(object sender, EventArgs e)
         {
             Process.Start(new ProcessStartInfo
             {
@@ -537,32 +547,32 @@ namespace Network_Upgrade
             });
             if (checkBox2.Checked)
             {
-                using (RegistryKey key = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Classes\exefile\shell\Firewall_Allow"))
+                using (var key = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Classes\exefile\shell\Firewall_Allow"))
                 {
                     key?.SetValue("", @"Разрешить доступ в интернет");
                     key?.SetValue("Extended", "");
                     key?.SetValue("Icon", @"netcenter.dll,10");
                 }
 
-                using (RegistryKey key = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Classes\exefile\shell\Firewall_Allow\command"))
+                using (var key = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Classes\exefile\shell\Firewall_Allow\command"))
                 {
                     key?.SetValue("", @"netsh advfirewall firewall delete rule name=" + "\"%1\"");
                 }
 
-                using (RegistryKey key = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Classes\exefile\shell\Firewall_Block"))
+                using (var key = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Classes\exefile\shell\Firewall_Block"))
                 {
                     key?.SetValue("", @"Запретить доступ в интернет");
                     key?.SetValue("Extended", "");
                     key?.SetValue("Icon", @"netcenter.dll,5");
                 }
 
-                using (RegistryKey key = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Classes\exefile\shell\Firewall_Block\command"))
+                using (var key = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Classes\exefile\shell\Firewall_Block\command"))
                 {
                     key?.SetValue("",
                         @"cmd /d /c ""netsh advfirewall firewall add rule name=""%1"" dir=in action=block program=""%1"" & netsh advfirewall firewall add rule name=""%1"" dir=out action=block program=""%1""");
                 }
 
-                using (RegistryKey key = Registry.CurrentUser.CreateSubKey(@"Software\Upgrade Your Network"))
+                using (var key = Registry.CurrentUser.CreateSubKey(@"Software\Upgrade Your Network"))
                 {
                     key?.SetValue("Shell", "1");
                 }
@@ -571,16 +581,16 @@ namespace Network_Upgrade
             {
                 Registry.LocalMachine.DeleteSubKeyTree(@"SOFTWARE\Classes\exefile\shell\Firewall_Allow", false);
                 Registry.LocalMachine.DeleteSubKeyTree(@"SOFTWARE\Classes\exefile\shell\Firewall_Block", false);
-                using (RegistryKey key = Registry.CurrentUser.CreateSubKey(@"Software\Upgrade Your Network"))
+                using (var key = Registry.CurrentUser.CreateSubKey(@"Software\Upgrade Your Network"))
                 {
                     key?.SetValue("Shell", "0");
                 }
             }
         }
 
-        void CheckBox3_CheckedChanged(object sender, EventArgs e)
+        private void CheckBox3_CheckedChanged(object sender, EventArgs e)
         {
-            using (RegistryKey key = Registry.LocalMachine.CreateSubKey(@"SYSTEM\CurrentControlSet\Services\Dnscache\Parameters"))
+            using (var key = Registry.LocalMachine.CreateSubKey(@"SYSTEM\CurrentControlSet\Services\Dnscache\Parameters"))
             {
                 if (checkBox3.Checked)
                 {
@@ -619,7 +629,7 @@ namespace Network_Upgrade
             }
         }
 
-        void TextBox1_TextChanged(object sender, EventArgs e)
+        private void TextBox1_TextChanged(object sender, EventArgs e)
         {
             if (!Regex.IsMatch(textBox1.Text, "[^0-9-.]"))
                 return;
@@ -627,7 +637,7 @@ namespace Network_Upgrade
             textBox1.SelectionStart = textBox1.TextLength;
         }
 
-        void TextBox2_TextChanged(object sender, EventArgs e)
+        private void TextBox2_TextChanged(object sender, EventArgs e)
         {
             if (!Regex.IsMatch(textBox2.Text, "[^0-9-.]"))
                 return;
@@ -635,23 +645,23 @@ namespace Network_Upgrade
             textBox2.SelectionStart = textBox2.TextLength;
         }
 
-        void TabControl1_SelectedIndexChanged(object sender, EventArgs e)
+        private void TabControl1_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (tabControl1.SelectedIndex != 3)
                 return;
             FillComboAsync();
         }
 
-        void Label5_Paint(object sender, PaintEventArgs e)
+        private void Label5_Paint(object sender, PaintEventArgs e)
         {
-            Pen pen = new Pen(Color.Black, 1)
+            var pen = new Pen(Color.Black, 1)
             {
-                DashPattern = new float[] { 2, 2 }
+                DashPattern = new float[] {2, 2}
             };
             e.Graphics.DrawRectangle(pen, 0, 0, label5.Width, label5.Height);
         }
 
-        async void ComboBox3_SelectedIndexChanged(object sender, EventArgs e)
+        private async void ComboBox3_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (comboBox3 != null)
             {
@@ -667,7 +677,7 @@ namespace Network_Upgrade
             }
         }
 
-        void Button8_Click(object sender, EventArgs e)
+        private void Button8_Click(object sender, EventArgs e)
         {
             if (MessageBox.Show(@"Вы действительно хотите удалить эту сеть?", @"Внимание!", MessageBoxButtons.YesNo, MessageBoxIcon.Question) ==
                 DialogResult.Yes)
@@ -686,7 +696,7 @@ namespace Network_Upgrade
             }
         }
 
-        void Button5_Click(object sender, EventArgs e)
+        private void Button5_Click(object sender, EventArgs e)
         {
             if (MessageBox.Show(@"Вы действительно хотите удалить все соединения?\n Это удалит все сохраненные пароли Wi-Fi", @"Внимание!",
                     MessageBoxButtons.YesNo, MessageBoxIcon.Question) ==
@@ -706,7 +716,7 @@ namespace Network_Upgrade
             }
         }
 
-        void TextBox3_TextChanged(object sender, EventArgs e)
+        private void TextBox3_TextChanged(object sender, EventArgs e)
         {
             if (Regex.IsMatch(textBox3.Text, "[^0-9-.]"))
             {
@@ -714,54 +724,16 @@ namespace Network_Upgrade
                 textBox3.SelectionStart = textBox3.Text.Length;
                 button9.Enabled = false;
             }
-            else
-            {
-                button9.Enabled = true;
-            }
+            button9.Enabled = true;
         }
 
-        void Button9_Click(object sender, EventArgs e)
+        private async void Button9_Click(object sender, EventArgs e)
         {
             label30.Visible = true;
             if (Regex.IsMatch(textBox3.Text, @"^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$"))
-                GetIpInfoAsync();
+                await GetIpInfoAsync();
             else
                 MessageBox.Show(@"Загугли, как выглядит IP");
-        }
-
-        private void GetIpInfoAsync()
-        {
-            var wc = new WebClient();
-            var line = wc.DownloadString($"http://free.ipwhois.io/xml/{textBox3.Text}?lang=en");
-            var link = Regex.Match(line, "<latitude>(.*?)</latitude>(.*?)<longitude>(.*?)</longitude>");
-            var latitude = link.Groups[1].ToString();
-            var longitude = link.Groups[3].ToString();
-            linkLabel1.Click += (s, e) => { Process.Start($"https://www.google.com/maps/search/?api=1&query={latitude},{longitude}"); };
-
-            void Action()
-            {
-                var match = Regex.Match(line,
-                    "<country>(.*?)</country>(.*?)<region>(.*?)</region>(.*?)<city>(.*?)</city>(.*?)<org>(.*?)</org>(.*?)<currency>(.*?)</currency>");
-                label23.Text = match.Groups[7].ToString();
-                label26.Text = match.Groups[1].ToString();
-                label27.Text = match.Groups[5].ToString();
-                label28.Text = match.Groups[3].ToString();
-                label29.Text = match.Groups[9].ToString();
-            }
-
-            if (!line.Contains("invalid"))
-            {
-                if (InvokeRequired)
-                    Invoke((Action)Action);
-                else
-                    Action();
-            }
-            else
-            {
-                MessageBox.Show(@"Загугли, как выглядит IP");
-            }
-            linkLabel1.Enabled = true;
-            label30.Visible = false;
         }
     }
 }

@@ -70,16 +70,13 @@
             this.label14 = new System.Windows.Forms.Label();
             this.comboBox3 = new System.Windows.Forms.ComboBox();
             this.tabPage5 = new System.Windows.Forms.TabPage();
+            this.label31 = new System.Windows.Forms.Label();
             this.button9 = new System.Windows.Forms.Button();
             this.label30 = new System.Windows.Forms.Label();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
-            this.label29 = new System.Windows.Forms.Label();
             this.label28 = new System.Windows.Forms.Label();
             this.label27 = new System.Windows.Forms.Label();
             this.label26 = new System.Windows.Forms.Label();
-            this.label23 = new System.Windows.Forms.Label();
-            this.label24 = new System.Windows.Forms.Label();
-            this.label25 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label21 = new System.Windows.Forms.Label();
             this.label22 = new System.Windows.Forms.Label();
@@ -97,6 +94,7 @@
             this.autoupdatebox = new System.Windows.Forms.CheckBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.webBrowser1 = new System.Windows.Forms.WebBrowser();
+            this.label23 = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
@@ -250,10 +248,10 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Google Sans", 12F, System.Drawing.FontStyle.Bold);
-            this.label3.Location = new System.Drawing.Point(22, 11);
+            this.label3.Font = new System.Drawing.Font("Montserrat SemiBold", 12F, System.Drawing.FontStyle.Bold);
+            this.label3.Location = new System.Drawing.Point(9, 11);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(409, 20);
+            this.label3.Size = new System.Drawing.Size(434, 22);
             this.label3.TabIndex = 2;
             this.label3.Text = "Добавление своих доменов в список блокировки";
             // 
@@ -326,6 +324,7 @@
             this.label16.TabIndex = 25;
             this.label16.Text = "TTL:";
             this.label16.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.toolTip1.SetToolTip(this.label16, "Время жизни пакета данных\r\nВремя актуальности записей DNS\r\n");
             // 
             // pictureBox7
             // 
@@ -415,6 +414,7 @@
             this.label12.TabIndex = 18;
             this.label12.Text = "Ping:";
             this.label12.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.toolTip1.SetToolTip(this.label12, "Время ответа вашего компьютера на запрос");
             this.label12.Click += new System.EventHandler(this.PictureBox1_Click);
             // 
             // label11
@@ -436,6 +436,7 @@
             this.label13.TabIndex = 16;
             this.label13.Text = "Ping:";
             this.label13.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.toolTip1.SetToolTip(this.label13, "Время ответа вашего компьютера на запрос");
             this.label13.Click += new System.EventHandler(this.PictureBox1_Click);
             // 
             // pictureBox1
@@ -511,10 +512,10 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Font = new System.Drawing.Font("Google Sans", 12F, System.Drawing.FontStyle.Bold);
-            this.label8.Location = new System.Drawing.Point(121, 11);
+            this.label8.Font = new System.Drawing.Font("Montserrat SemiBold", 12F, System.Drawing.FontStyle.Bold);
+            this.label8.Location = new System.Drawing.Point(112, 10);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(210, 20);
+            this.label8.Size = new System.Drawing.Size(228, 22);
             this.label8.TabIndex = 4;
             this.label8.Text = "Изменение DNS-Сервера";
             // 
@@ -605,7 +606,7 @@
             // 
             this.label18.Enabled = false;
             this.label18.Font = new System.Drawing.Font("Gilroy", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label18.Location = new System.Drawing.Point(8, 68);
+            this.label18.Location = new System.Drawing.Point(8, 67);
             this.label18.Name = "label18";
             this.label18.Size = new System.Drawing.Size(78, 18);
             this.label18.TabIndex = 22;
@@ -649,16 +650,14 @@
             // tabPage5
             // 
             this.tabPage5.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.tabPage5.Controls.Add(this.label23);
+            this.tabPage5.Controls.Add(this.label31);
             this.tabPage5.Controls.Add(this.button9);
             this.tabPage5.Controls.Add(this.label30);
             this.tabPage5.Controls.Add(this.linkLabel1);
-            this.tabPage5.Controls.Add(this.label29);
             this.tabPage5.Controls.Add(this.label28);
             this.tabPage5.Controls.Add(this.label27);
             this.tabPage5.Controls.Add(this.label26);
-            this.tabPage5.Controls.Add(this.label23);
-            this.tabPage5.Controls.Add(this.label24);
-            this.tabPage5.Controls.Add(this.label25);
             this.tabPage5.Controls.Add(this.label2);
             this.tabPage5.Controls.Add(this.label21);
             this.tabPage5.Controls.Add(this.label22);
@@ -669,6 +668,17 @@
             this.tabPage5.TabIndex = 6;
             this.tabPage5.Text = "IP";
             // 
+            // label31
+            // 
+            this.label31.AutoSize = true;
+            this.label31.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.label31.Font = new System.Drawing.Font("Gilroy", 12F);
+            this.label31.Location = new System.Drawing.Point(52, 135);
+            this.label31.Name = "label31";
+            this.label31.Size = new System.Drawing.Size(67, 19);
+            this.label31.TabIndex = 39;
+            this.label31.Text = "Мой IP?";
+            // 
             // button9
             // 
             this.button9.BackColor = System.Drawing.Color.Gainsboro;
@@ -677,7 +687,7 @@
             this.button9.FlatAppearance.BorderSize = 0;
             this.button9.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button9.Font = new System.Drawing.Font("Verdana", 9.75F);
-            this.button9.Location = new System.Drawing.Point(154, 18);
+            this.button9.Location = new System.Drawing.Point(203, 46);
             this.button9.Name = "button9";
             this.button9.Size = new System.Drawing.Size(85, 23);
             this.button9.TabIndex = 38;
@@ -690,7 +700,7 @@
             // label30
             // 
             this.label30.Font = new System.Drawing.Font("Gilroy", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label30.Location = new System.Drawing.Point(235, 18);
+            this.label30.Location = new System.Drawing.Point(284, 46);
             this.label30.Name = "label30";
             this.label30.Size = new System.Drawing.Size(116, 23);
             this.label30.TabIndex = 37;
@@ -702,82 +712,41 @@
             // 
             this.linkLabel1.AutoSize = true;
             this.linkLabel1.Enabled = false;
-            this.linkLabel1.Location = new System.Drawing.Point(150, 157);
+            this.linkLabel1.Location = new System.Drawing.Point(199, 135);
             this.linkLabel1.Name = "linkLabel1";
             this.linkLabel1.Size = new System.Drawing.Size(123, 19);
             this.linkLabel1.TabIndex = 35;
             this.linkLabel1.TabStop = true;
             this.linkLabel1.Text = "Местоположение";
             // 
-            // label29
-            // 
-            this.label29.Font = new System.Drawing.Font("Gilroy", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label29.Location = new System.Drawing.Point(125, 119);
-            this.label29.Name = "label29";
-            this.label29.Size = new System.Drawing.Size(290, 18);
-            this.label29.TabIndex = 34;
-            this.label29.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
             // label28
             // 
             this.label28.Font = new System.Drawing.Font("Gilroy", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label28.Location = new System.Drawing.Point(125, 101);
+            this.label28.Location = new System.Drawing.Point(134, 108);
             this.label28.Name = "label28";
-            this.label28.Size = new System.Drawing.Size(290, 18);
+            this.label28.Size = new System.Drawing.Size(311, 18);
             this.label28.TabIndex = 33;
-            this.label28.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // label27
             // 
             this.label27.Font = new System.Drawing.Font("Gilroy", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label27.Location = new System.Drawing.Point(125, 83);
+            this.label27.Location = new System.Drawing.Point(134, 90);
             this.label27.Name = "label27";
-            this.label27.Size = new System.Drawing.Size(290, 18);
+            this.label27.Size = new System.Drawing.Size(311, 18);
             this.label27.TabIndex = 32;
-            this.label27.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // label26
             // 
             this.label26.Font = new System.Drawing.Font("Gilroy", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label26.Location = new System.Drawing.Point(125, 65);
+            this.label26.Location = new System.Drawing.Point(134, 72);
             this.label26.Name = "label26";
-            this.label26.Size = new System.Drawing.Size(290, 18);
+            this.label26.Size = new System.Drawing.Size(311, 18);
             this.label26.TabIndex = 31;
-            this.label26.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // label23
-            // 
-            this.label23.Font = new System.Drawing.Font("Gilroy", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label23.Location = new System.Drawing.Point(125, 46);
-            this.label23.Name = "label23";
-            this.label23.Size = new System.Drawing.Size(290, 18);
-            this.label23.TabIndex = 30;
-            this.label23.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // label24
-            // 
-            this.label24.Font = new System.Drawing.Font("Gilroy", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label24.Location = new System.Drawing.Point(3, 119);
-            this.label24.Name = "label24";
-            this.label24.Size = new System.Drawing.Size(76, 18);
-            this.label24.TabIndex = 29;
-            this.label24.Text = "Валюта:";
-            this.label24.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // label25
-            // 
-            this.label25.Font = new System.Drawing.Font("Gilroy", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label25.Location = new System.Drawing.Point(3, 46);
-            this.label25.Name = "label25";
-            this.label25.Size = new System.Drawing.Size(116, 18);
-            this.label25.TabIndex = 28;
-            this.label25.Text = "Организация:";
-            this.label25.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // label2
             // 
             this.label2.Font = new System.Drawing.Font("Gilroy", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label2.Location = new System.Drawing.Point(3, 101);
+            this.label2.Location = new System.Drawing.Point(52, 108);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(62, 18);
             this.label2.TabIndex = 27;
@@ -787,7 +756,7 @@
             // label21
             // 
             this.label21.Font = new System.Drawing.Font("Gilroy", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label21.Location = new System.Drawing.Point(3, 83);
+            this.label21.Location = new System.Drawing.Point(52, 90);
             this.label21.Name = "label21";
             this.label21.Size = new System.Drawing.Size(82, 18);
             this.label21.TabIndex = 26;
@@ -797,7 +766,7 @@
             // label22
             // 
             this.label22.Font = new System.Drawing.Font("Gilroy", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label22.Location = new System.Drawing.Point(3, 65);
+            this.label22.Location = new System.Drawing.Point(52, 72);
             this.label22.Name = "label22";
             this.label22.Size = new System.Drawing.Size(76, 18);
             this.label22.TabIndex = 25;
@@ -807,7 +776,7 @@
             // textBox3
             // 
             this.textBox3.Font = new System.Drawing.Font("Google Sans", 9.75F, System.Drawing.FontStyle.Bold);
-            this.textBox3.Location = new System.Drawing.Point(7, 18);
+            this.textBox3.Location = new System.Drawing.Point(56, 46);
             this.textBox3.Multiline = true;
             this.textBox3.Name = "textBox3";
             this.textBox3.Size = new System.Drawing.Size(141, 23);
@@ -960,7 +929,17 @@
             this.webBrowser1.Size = new System.Drawing.Size(1164, 381);
             this.webBrowser1.TabIndex = 36;
             // 
-            // Form1
+            // label23
+            // 
+            this.label23.AutoSize = true;
+            this.label23.Font = new System.Drawing.Font("Montserrat SemiBold", 12F, System.Drawing.FontStyle.Bold);
+            this.label23.Location = new System.Drawing.Point(142, 10);
+            this.label23.Name = "label23";
+            this.label23.Size = new System.Drawing.Size(169, 22);
+            this.label23.TabIndex = 40;
+            this.label23.Text = "Информация об IP";
+            // 
+            // MainWindows
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -970,7 +949,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.Name = "Form1";
+            this.Name = "MainWindows";
             this.Opacity = 0D;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Network Upgrade";
@@ -1051,13 +1030,9 @@
         private System.Windows.Forms.Button button8;
         private System.Windows.Forms.TabPage tabPage5;
         private System.Windows.Forms.TextBox textBox3;
-        private System.Windows.Forms.Label label29;
         private System.Windows.Forms.Label label28;
         private System.Windows.Forms.Label label27;
         private System.Windows.Forms.Label label26;
-        private System.Windows.Forms.Label label23;
-        private System.Windows.Forms.Label label24;
-        private System.Windows.Forms.Label label25;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label21;
         private System.Windows.Forms.Label label22;
@@ -1065,6 +1040,8 @@
         private System.Windows.Forms.WebBrowser webBrowser1;
         private System.Windows.Forms.Label label30;
         private System.Windows.Forms.Button button9;
+        private System.Windows.Forms.Label label31;
+        private System.Windows.Forms.Label label23;
     }
 }
 
