@@ -1,4 +1,4 @@
-# Upgrade Your Network [![CodeFactor](https://www.codefactor.io/repository/github/authfailed/upgrade-your-network/badge)](https://www.codefactor.io/repository/github/authfailed/upgrade-your-network)
+# Network Tweaker [![CodeFactor](https://www.codefactor.io/repository/github/authfailed/network-tweaker/badge)](https://www.codefactor.io/repository/github/authfailed/network-tweaker)
 Полезность программы заключается в:
 - Большом списке фильтров (Спасибо [@StevenBlack](https://github.com/stevenblack))
 - Удобном выборе фильтра 
