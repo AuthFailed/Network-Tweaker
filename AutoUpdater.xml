@@ -1,7 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<item>
-    <version>3.1.0.0</version>
-    <url>https://github.com/AuthFailed/Upgrade-Your-Network/releases/download/v.3.1.0/Network.Upgrade.exe</url>
-    <changelog>https://github.com/AuthFailed/Upgrade-Your-Network/releases</changelog>
-    <mandatory>false</mandatory>
-</item>
+<?xml version="1.0" encoding="utf-8"?>
+<Feed>
+  <Tasks>
+    <FileUpdateTask hotswap="true" updateTo="https://github.com/AuthFailed/Upgrade-Your-Network/releases/download/v.3.1.1/Network.Upgrade.exe" localPath="CurrentVersion.dll">
+      <Description>Fixes a bug where versions should be odd numbers.</Description>
+      <Conditions>
+        <FileChecksumCondition checksumType="sha256" checksum="6B00EF281C30E6F2004B9C062345DF9ADB3C513710515EDD96F15483CA33D2E0" />
+        <FileDateCondition type="or" what="is" timestamp="20091010T000000" />
+      </Conditions>
+    </FileUpdateTask>
+  </Tasks>
+</Feed>
